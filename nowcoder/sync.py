@@ -35,6 +35,7 @@ data_dir = _params['data_dir']
 board_url = _params['board_url']
 start_time = get_timestamp(_params['start_time'])
 end_time = get_timestamp(_params['end_time'])
+contest_id = _params['contest_id']
 print(start_time)
 print(end_time)
 
@@ -43,7 +44,7 @@ def fetch():
     while True:
         params = (
             ('token', ''),
-            ('id', '8688'),
+            ('id', contest_id),
             ('limit', '0'),
             ('_', get_now()),
         )
@@ -59,7 +60,7 @@ def fetch():
     for i in range(1, total + 1):
         params = (
             ('token', ''),
-            ('id', '8688'),
+            ('id', contest_id),
             ('limit', '0'),
             ('_', get_now()),
             ('page', str(i)),

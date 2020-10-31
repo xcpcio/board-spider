@@ -9,7 +9,6 @@ def json_input(path):
 
 _params = json_input('params.json')
 data_dir = _params['data_dir']
-board_url = _params['board_url']
 penalty = 20
 
 def json_output(data):
@@ -30,12 +29,16 @@ def get_now():
     return int(round(time.time() * 1000))
 
 def fetch():
-    params = (
-        ('t', get_now()),
-    )   
-    response = requests.get(board_url, params=params)
-
-    return response
+    if 'board_url' in _params.keys():
+        board_url = _params['board_url']
+        params = (
+            ('t', get_now()),
+        )   
+        response = requests.get(board_url, params=params)
+        return json.loads(response.text)
+    else:
+        board_file = _params['board_file']
+        return json_input(board_file)
 
 def team_output(res):
     team = {}
@@ -75,7 +78,7 @@ def run_output(res):
             problem_id += 1
 
             status = 'incorrect'
-            if problem['result'] == 'AC':
+            if problem['result'] == 'AC' or problem['result'] == 'FB':
                 status = 'correct'
             
             timestamp = int(problem['time'][0]) * 60
@@ -112,7 +115,6 @@ def sync():
         print("fetching...")
         try:
             res = fetch()
-            res = json.loads(res.text)
             team_output(res)
             run_output(res)
             print("fetch successfully")
