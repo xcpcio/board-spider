@@ -24,8 +24,6 @@ def output(filename, data):
     with open(path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
-
-
 def fetch():
     params = (
         ('page', '0'),
@@ -133,13 +131,11 @@ def sync():
             res_list = fetch()
             team_output(res_list)
             run_output(res_list)
-        except:
+            print("fetch successfully")
+        except Exception as e:
             print("fetch failed...")
+            print(e)
         print("sleeping...")
         time.sleep(20)
 
 sync()
-
-
-
-
