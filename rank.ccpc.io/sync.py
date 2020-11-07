@@ -78,37 +78,57 @@ def run_output(res):
         problem_id = -1
         for problem in item['statuses']:
             problem_id += 1
-
-            status = 'incorrect'
-            if Accepted(problem['result']):
-                status = 'correct'
-            
-            timestamp = int(problem['time'][0]) * 60
-            
-            tries = int(problem['tries'])
-            
-            if status == 'correct':
-                tries -= 1
-                if tries < penalty_num:
-                    penalty_num -= tries
-                else:
-                    tries = penalty_num
-                    penalty_num = 0
-                _run = {}
-                _run['team_id'] = team_id
+            _run = {}
+            _run['problem_id'] = problem_id
+            _run['team_id'] = team_id
+            for __run in problem['solutions']:
+                status = 'incorrect'
+                if Accepted(__run['result']):
+                    status = 'correct'
+                timestamp = int(__run['time'][0])
+                if __run['time'][1] == 'min':
+                    timestamp *= 60;
+                elif __run['time'][1] == 's':
+                    timestamp = timestamp // 60 * 60
+                _run['status'] = status
                 _run['timestamp'] = timestamp
-                _run['status'] = 'correct'
-                _run['problem_id'] = problem_id
-                run.append(_run)
+                run.append(_run.copy())
+                
 
-            if tries > 0: 
-                for j in range(0, tries):
-                    _run = {}
-                    _run['team_id'] = team_id
-                    _run['timestamp'] = timestamp
-                    _run['status'] = 'incorrect'
-                    _run['problem_id'] = problem_id
-                    run.append(_run)
+            # status = 'incorrect'
+            # if Accepted(problem['result']):
+            #     status = 'correct'
+            
+            
+            # timestamp = int(problem['time'][0])
+            # timestamp = timestamp // 60 * 60
+            # if problem['time'][1] == 'min':
+            #     timestamp *= 60
+            
+            # tries = int(problem['tries'])
+            
+            # if status == 'correct':
+            #     tries -= 1
+            #     if tries < penalty_num:
+            #         penalty_num -= tries
+            #     else:
+            #         tries = penalty_num
+            #         penalty_num = 0
+            #     _run = {}
+            #     _run['team_id'] = team_id
+            #     _run['timestamp'] = timestamp
+            #     _run['status'] = 'correct'
+            #     _run['problem_id'] = problem_id
+            #     run.append(_run)
+
+            # if tries > 0: 
+            #     for j in range(0, tries):
+            #         _run = {}
+            #         _run['team_id'] = team_id
+            #         _run['timestamp'] = timestamp
+            #         _run['status'] = 'incorrect'
+            #         _run['problem_id'] = problem_id
+            #         run.append(_run)
     if len(run) > 0:
         output('run.json', run)
 
