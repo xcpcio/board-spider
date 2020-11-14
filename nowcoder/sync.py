@@ -30,7 +30,8 @@ def get_time_diff(l, r):
 
 _params = json_input('params.json')
 
-headers = _params['headers']
+# headers = _params['headers']
+headers = {}
 data_dir = _params['data_dir']
 board_url = _params['board_url']
 start_time = get_timestamp(_params['start_time'])
@@ -104,13 +105,20 @@ def run_output(res_list):
                 if problem['accepted']:
                     status = 'correct'
                     timestamp = get_time_diff(start_time, int(problem['acceptedTime']))
-                cnt = problem['failedCount']
-                for j in range(0, cnt):
+                for j in range(0, problem['failedCount']):
                     run_ = {
                         'team_id': team_id,
                         'timestamp': timestamp,
                         'problem_id': i,
                         'status': 'incorrect'
+                    }
+                    run.append(run_)
+                for j in range(0, problem['waitingJudgeCount']):
+                    run_ = {
+                        'team_id': team_id,
+                        'timestamp': timestamp,
+                        'problem_id': i,
+                        'status': 'pending'
                     }
                     run.append(run_)
                 if status == 'correct':
