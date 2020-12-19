@@ -85,7 +85,10 @@ def team_output(res_list):
             _team = {}
             _team['name'] = team_name
             _team['organization'] = team_organization
-            _team['official'] = 1
+            if _team['name'][0] == '☆':
+                _team['unofficial'] = 1
+            else:
+                _team['official'] = 1
             teams[team_id] = _team
     if len(teams.keys()) > 0:
         output("team.json", teams)
