@@ -1,7 +1,9 @@
+#!/usr/bin/env python
 import requests
 import json
 import grequests
 from os import path
+import os
 import time
 
 def json_output(data):
@@ -28,6 +30,10 @@ def get_timestamp(dt):
 def get_time_diff(l, r):
     return int((r - l) // 1000)
 
+def ensure_dir(s):
+    if not os.path.exists(s):
+        os.makedirs(s)
+
 _params = json_input('params.json')
 
 # headers = _params['headers']
@@ -37,8 +43,18 @@ board_url = _params['board_url']
 start_time = get_timestamp(_params['start_time'])
 end_time = get_timestamp(_params['end_time'])
 contest_id = _params['contest_id']
+
+unofficial_organization = []
+unofficial_team_name = []
+if 'unofficial_organization' in _params.keys():
+    unofficial_organization = _params['unofficial_organization']
+if 'unofficial_team_name' in _params.keys():
+    unofficial_team_name = _params['unofficial_team_name']
+
 print(start_time)
 print(end_time)
+
+ensure_dir(data_dir)
 
 def fetch():
     total = 0
@@ -87,8 +103,13 @@ def team_output(res_list):
             _team['organization'] = team_organization
             if _team['name'][0] == '☆':
                 _team['unofficial'] = 1
+                _team['name'] = team_name[1:]
             else:
                 _team['official'] = 1
+            if team_organization in unofficial_organization or team_name in unofficial_team_name:
+                _team['unofficial'] = 1
+                if 'official' in _team.keys():
+                    del _team['official']
             teams[team_id] = _team
     if len(teams.keys()) > 0:
         output("team.json", teams)

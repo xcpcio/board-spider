@@ -1,7 +1,9 @@
 {
-    "data_dir": "/var/www/XCPCIO-board-data/data/provincial-contest/2020/jscpc",
+    "data_dir": "./data",
     "board_url": "https://ac.nowcoder.com/acm-heavy/acm/contest/real-time-rank-data",
     "start_time": "2020-11-14 15:00:00",
     "end_time": "2020-11-14 18:00:00",
-    "contest_id": 8829
+    "contest_id": 10272,
+    "unofficial_organization": ["南京航空航天大学"],
+    "unofficial_team_name": []
 }
