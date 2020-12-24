@@ -49,7 +49,9 @@ def team_output(res):
         _item['name'] = item['name']
         _item['organization'] = item['organization']
         _item['coach'] = item['teamMembers'][0]['name'].replace('(教练)', '')
-        _item['members'] = "、".join([item['teamMembers'][i]['name'] for i in range(1, 4)])
+        members = [item['teamMembers'][i]['name'] for i in range(1, 4)]
+        members.sort()
+        _item['members'] = "、".join(members)
         if item['official'] == True:
             _item['official'] = 1
         else:
