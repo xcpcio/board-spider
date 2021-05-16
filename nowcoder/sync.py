@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # at the beginning of the script
 import gevent.monkey
 gevent.monkey.patch_all()
