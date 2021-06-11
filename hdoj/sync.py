@@ -33,7 +33,8 @@ ensure_dir(__LOG_DIR__)
 output_path = "./"
 
 def parse_options():
-  global config_path, username, password
+  global config_path, username, password, enableFileLog
+  enableFileLog = False
 
   parser = OptionParser()
    
@@ -57,7 +58,14 @@ def parse_options():
       type=str,
       help="password" 
   )
-
+ 
+  parser.add_option(
+      '-l', '--log',
+      dest='log',
+      type=int,
+      help="enable log" 
+  )
+  
   opts, args = parser.parse_args()
 
   if opts.config_path:
@@ -70,6 +78,9 @@ def parse_options():
    
   if opts.password:
     password = opts.password
+  
+  if opts.log:
+    enableFileLog = True
 
 def init_logging():
   global logger
@@ -78,15 +89,16 @@ def init_logging():
   logger.setLevel(logging.INFO)
   formatter = logging.Formatter('%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
-  logFileName = '{}/{}.log'.format(__LOG_DIR__, strftime('%Y-%m-%dT%H:%M:%S', localtime(time())))
-  fileHandler = logging.FileHandler(logFileName)
-  fileHandler.setFormatter(formatter)
+  if enableFileLog == True:
+    logFileName = '{}/{}.log'.format(__LOG_DIR__, strftime('%Y-%m-%dT%H:%M:%S', localtime(time())))
+    fileHandler = logging.FileHandler(logFileName)
+    fileHandler.setFormatter(formatter)
+    logger.addHandler(fileHandler)
 
   consoleHandler = logging.StreamHandler()
   consoleHandler.setFormatter(formatter)
-
-  logger.addHandler(fileHandler)
   logger.addHandler(consoleHandler)
+
 
 def load_yaml(path):
   with open(path, 'r', encoding="utf-8") as f:
@@ -244,23 +256,32 @@ def last_submit(prob, team):
   return res
 
 def main():
-  init_logging()
   parse_options()
+  init_logging()
   parse_configuration()
     
   http = login()
-
-  standings = http.get('http://acm.hdu.edu.cn/contests/client_ranklist.php?cid=' + contest_id).text
+  
+  while True:
+    logger.info("fetching...")
+    
+    try:
+      standings = http.get('http://acm.hdu.edu.cn/contests/client_ranklist.php?cid=' + contest_id).text
+      parse_teams(standings)
+      parse_runs(http)
+      logger.info("fetch successfully")
+    except Exception as e:
+      logger.error(e)
+    
+    logger.info("sleeping...")
+    sleep(20)
+ 
+  return
 
   # logger.info(standings)
   
   # probs = parse_probs(standings)
   # print('@problems ' + str(len(probs)))
-  
-  parse_teams(standings)
-  parse_runs(http)
- 
-  return
 
   for i in range(0, len(teams)):
     if not i in used_teams:
