@@ -28,8 +28,6 @@ def output(filename, data):
     f.write(json_output(data))
 
 __LOG_DIR__ = "./log"
-ensure_dir(__LOG_DIR__)
-
 output_path = "./"
 
 def parse_options():
@@ -90,6 +88,7 @@ def init_logging():
   formatter = logging.Formatter('%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
   if enableFileLog == True:
+    ensure_dir(__LOG_DIR__)
     logFileName = '{}/{}.log'.format(__LOG_DIR__, strftime('%Y-%m-%dT%H:%M:%S', localtime(time())))
     fileHandler = logging.FileHandler(logFileName)
     fileHandler.setFormatter(formatter)
