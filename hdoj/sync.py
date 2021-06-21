@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
+
 import os
-import re
 import json
-import urllib3
 import requests
 import dateutil.parser
 import yaml
@@ -27,8 +26,12 @@ def output(filename, data):
   with open(os.path.join(output_path, filename), 'w') as f:
     f.write(json_output(data))
 
+# DEFAULT VALUE
 __LOG_DIR__ = "./log"
 output_path = "./"
+fetch_sleep_time = 20
+
+INF = 0x3f3f3f3f
 
 def parse_options():
   global config_path, username, password, enableFileLog
@@ -98,14 +101,13 @@ def init_logging():
   consoleHandler.setFormatter(formatter)
   logger.addHandler(consoleHandler)
 
-
 def load_yaml(path):
   with open(path, 'r', encoding="utf-8") as f:
     data = yaml.load(f)
     return data
 
 def parse_configuration():
-  global config_yaml, username, password, contest_id, start_time, output_path
+  global config_yaml, username, password, contest_id, start_time, output_path, fetch_sleep_time
   config_yaml = load_yaml(config_path)
   
   logger.info(config_yaml)
@@ -115,6 +117,9 @@ def parse_configuration():
   
   if "password" in config_yaml.keys():
     password = config_yaml["password"]
+   
+  if "fetch_sleep_time" in config_yaml.keys():
+    fetch_sleep_time = config_yaml["fetch_sleep_time"]
 
   contest_id = str(config_yaml["contest_id"])
   start_time = dateutil.parser.parse(config_yaml["start_time"])
@@ -147,16 +152,10 @@ def my_parse_team(teamname):
   name = secs[1].strip()
   isStar = False if secs[0].find('打星') < 0 else True
   isGirls = False if secs[0].find('女队') < 0 else True
-  
-  #teamid = int(secs[0].strip().replace('team', '')) - 1
-  #school = secs[2].strip()
-  #name = secs[1].replace('正式', '').replace('* ', '').strip()
-  #isStar = '' if secs[1].endswith('正式 ') else '*'
-  
+    
   return teamid, school, name, isStar, isGirls
 
 def parse_team(line):
-  # get the team name
   return my_parse_team(line.split('"')[1])
 
 def parse_teams(content):
@@ -215,44 +214,50 @@ def parse_verdict(content):
   else:
     return "RJ"
 
-used_teams = dict()
+min_unsolved = 1
+run_res = dict()
 def parse_runs(http):
-
-  outputRuns = []
-  res = dict()
+  global min_unsolved, run_res
   page = 1
-  while True:
+  fetch_over = False
+
+  while not fetch_over:
+    logger.info('fetching status page ' + str(page))
     page_content = http.get('http://acm.hdu.edu.cn/contests/contest_status.php?cid=' + contest_id + '&pid=&user=&lang=&status=&page=' + str(page)).text
     page_content = page_content.split('<div align="center" class="FOOTER_LINK">')[0]
     items = page_content.split('<td height=22>')[1:]
+
+    if len(items) == 0:
+      break
 
     for item in items:
       cols = item.split('</td><td')
       stat = dict()
       stat['id'] = int(cols[0])
+      if stat['id'] <= min_unsolved:
+        fetch_over = True
       stat['status'] = parse_verdict(cols[2])
       stat['problem_id'] = int(cols[3].split('&pid=')[1].split('" title=')[0]) - 1001
       stat['timestamp'] = (dateutil.parser.parse(cols[1].split('>')[1]) - start_time).seconds
-      stat['team_id'] = int(cols[7].split('team')[1][0:3]) - 1
-      
-      used_teams[stat['team_id']] = True
-      outputRuns.append(stat)
-      res[stat['id']] = stat
-    
-    if (1 in res):
-      break
+      stat['team_id'] = int(cols[7].split('team')[1][0:3])
+      run_res[stat['id']] = stat
+ 
     page = page + 1
-   
-  output("run.json", outputRuns)
 
-lss = dict()
-def last_submit(prob, team):
-  key = prob + str(team)
-  res = 1
-  if key in lss:
-    res = lss[key] + 1
-  lss[key] = res
-  return res
+  max_id = 0
+  min_pd = INF
+  outputRuns = []
+  
+  for runid in run_res:
+    run = run_res[runid]
+    if run['id'] > max_id:
+      max_id = run['id']
+    if run['status'] == 'pending' and run['id'] < min_pd:
+      min_pd = run['id']
+    outputRuns.append(run)
+
+  min_unsolved = max_id + 1 if min_pd == INF else min_pd
+  output("run.json", outputRuns)
 
 def main():
   parse_options()
@@ -273,34 +278,7 @@ def main():
       logger.error(e)
     
     logger.info("sleeping...")
-    sleep(20)
- 
-  return
-
-  # logger.info(standings)
-  
-  # probs = parse_probs(standings)
-  # print('@problems ' + str(len(probs)))
-
-  for i in range(0, len(teams)):
-    if not i in used_teams:
-      stat = dict()
-      stat['id'] = len(res) + 1
-      stat['verdict'] = 'CE'
-      stat['prob'] = 'A'
-      stat['time'] = 99999
-      stat['team'] = i
-      res[stat['id']] = stat
-
-  print('@submissions ' + str(len(res)))
-
-  for p in probs:
-    print(p)
-  for t in teams:
-    print(t)
-  for r in sorted(res.keys()):
-    res[r]['last'] = last_submit(res[r]['prob'], res[r]['team'])
-    print('@s ' + str(res[r]['team']) + ',' + str(res[r]['prob']) + ',' + str(res[r]['last']) + ',' + str(res[r]['time']) + ',' + res[r]['verdict'])
+    sleep(fetch_sleep_time)
 
 if __name__ == '__main__':
   main()
