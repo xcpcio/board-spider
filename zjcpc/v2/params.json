@@ -1,0 +1,5 @@
+{
+	"data_dir": "./data",
+	"teams_url": "http://ccpc.pintia.cn/js/teams.js",
+	"runs_url": "http://ccpc.pintia.cn/js/runs.js"
+}
