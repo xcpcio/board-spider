@@ -38,12 +38,21 @@ def get_now():
     return int(round(time.time() * 1000))
 
 
+def get_js_object(js_code, key):
+    text = js_code.lstrip("var {} =".format(key)).rstrip(";\n ")
+    text = "JSON.stringify(" + text + ")"
+    text = execjs.eval(text)
+
+    return json.loads(text)
+
+
 _params = json_input('params.json')
 data_dir = _params['data_dir']
 
 
 def fetch(key):
     key_url = key + "_url"
+    key_file = key + "_file"
     if key_url in _params.keys():
         url = _params[key_url]
         params = (
@@ -51,15 +60,14 @@ def fetch(key):
         )
         response = requests.get(url, params=params)
 
-        text = response.text.lstrip("var {} =".format(key)).rstrip(";\n ")
-        text = "JSON.stringify(" + text + ")"
-        text = execjs.eval(text)
-
-        return json.loads(text)
-    else:
-        key_file = key + "_file"
+        return get_js_object(response.text, key)
+    elif key_file in _params.keys():
         board_file = _params[key_file]
-        return json_input(board_file)
+
+        with open(board_file, 'r') as f:
+            return get_js_object(f.read(), key)
+    else:
+        return ""
 
 
 def fetch_all():
@@ -68,8 +76,10 @@ def fetch_all():
 
 def team_output(teams):
     print(teams)
+
     team_dic = teams
     team = {}
+
     for key in team_dic:
         item = team_dic[key]
         team[key] = {}
@@ -87,13 +97,16 @@ def team_output(teams):
                 if tp == 'type1':
                     new_item['official'] = 1
 
-    output("team.json", team)
+    if len(team) > 0:
+        output("team.json", team)
 
 
 def run_output(runs):
     print(runs)
+
     run_list = runs
     run = []
+
     for item in run_list:
         new_item = {}
         new_item['team_id'] = item[0]
@@ -108,7 +121,8 @@ def run_output(runs):
             new_item['status'] = 'pending'
         run.append(new_item)
 
-    output("run.json", run)
+    if len(run) > 0:
+        output("run.json", run)
 
 
 def sync():
@@ -123,7 +137,7 @@ def sync():
             print("fetch failed...")
             print(e)
         print("sleeping...")
-        time.sleep(20)
+        time.sleep(10)
 
 
 sync()
