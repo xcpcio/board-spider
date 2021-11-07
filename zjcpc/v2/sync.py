@@ -22,9 +22,7 @@ def mkdir(_path):
 
 
 def get_timestamp(dt):
-    # 转换成时间数组
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    # 转换成时间戳
     timestamp = time.mktime(timeArray)
     return int(timestamp)
 
@@ -86,9 +84,11 @@ def team_output(teams):
         new_item = team[key]
         new_item['organization'] = item['school']
         new_item['name'] = item['team']
+
         members = item['members'].split('、')
         members.sort()
         new_item['members'] = members
+
         type = item['type'].split(" ")
         if 'unofficial' in type:
             new_item['unofficial'] = 1
@@ -112,6 +112,7 @@ def run_output(runs):
         new_item['team_id'] = item[0]
         new_item['problem_id'] = ord(item[1]) - ord('A')
         new_item['timestamp'] = (int(item[2] // 1000) // 60) * 60
+
         status = item[3]
         if status == 'AC':
             new_item['status'] = 'correct'
@@ -119,6 +120,7 @@ def run_output(runs):
             new_item['status'] = 'incorrect'
         elif status == 'NEW':
             new_item['status'] = 'pending'
+
         run.append(new_item)
 
     if len(run) > 0:
@@ -128,14 +130,17 @@ def run_output(runs):
 def sync():
     while True:
         print("fetching...")
+
         try:
             teams, runs = fetch_all()
             team_output(teams)
             run_output(runs)
+
             print("fetch successfully")
         except Exception as e:
             print("fetch failed...")
             print(e)
+
         print("sleeping...")
         time.sleep(10)
 
