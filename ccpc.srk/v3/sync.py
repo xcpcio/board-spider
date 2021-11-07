@@ -3,42 +3,50 @@ import json
 from os import path
 import time
 
+
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
+
 
 _params = json_input('params.json')
 data_dir = _params['data_dir']
 penalty = 20
 
+
 def json_output(data):
     return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
+
 
 def output(filename, data):
     with open(path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
+
 def get_timestamp(dt):
-    #转换成时间数组
+    # 转换成时间数组
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    #转换成时间戳
+    # 转换成时间戳
     timestamp = time.mktime(timeArray)
     return int(timestamp)
 
+
 def get_now():
     return int(round(time.time() * 1000))
+
 
 def fetch():
     if 'board_url' in _params.keys():
         board_url = _params['board_url']
         params = (
             ('t', get_now()),
-        )   
+        )
         response = requests.get(board_url, params=params)
         return json.loads(response.text)
     else:
         board_file = _params['board_file']
         return json_input(board_file)
+
 
 def team_output(res):
     team = {}
@@ -63,8 +71,10 @@ def team_output(res):
     if len(team.keys()) > 0:
         output("team.json", team)
 
+
 def Accepted(result):
     return result == 'AC' or result == 'FB'
+
 
 def run_output(res):
     run = []
@@ -90,7 +100,7 @@ def run_output(res):
                     status = 'correct'
                 timestamp = int(__run['time'][0])
                 if __run['time'][1] == 'min':
-                    timestamp *= 60;
+                    timestamp *= 60
                 elif __run['time'][1] == 's':
                     timestamp = timestamp // 60 * 60
                 _run['status'] = status
@@ -98,6 +108,7 @@ def run_output(res):
                 run.append(_run.copy())
     if len(run) > 0:
         output('run.json', run)
+
 
 def sync():
     while True:
@@ -112,5 +123,6 @@ def sync():
             print(e)
         print("sleeping...")
         time.sleep(20)
+
 
 sync()

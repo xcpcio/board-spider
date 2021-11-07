@@ -4,9 +4,11 @@ import grequests
 from os import path
 import time
 
+
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
+
 
 _params = json_input('params.json')
 cookies = _params['cookies']
@@ -17,20 +19,24 @@ board_url = _params['board_url']
 penalty = 20
 ac_score = 300
 
+
 def json_output(data):
     return json.dumps(data, sort_keys=False, indent=4, separators=(',', ':'), ensure_ascii=False)
+
 
 def output(filename, data):
     with open(path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
+
 def fetch():
     params = (
         ('page', '0'),
         ('limit', '50'),
-    )   
+    )
 
-    response = requests.get(board_url, headers=headers, params=params, cookies=cookies)
+    response = requests.get(board_url, headers=headers,
+                            params=params, cookies=cookies)
     total = json.loads(response.text)['total']
 
     print(total)
@@ -42,10 +48,12 @@ def fetch():
             ('page', str(i)),
             ('limit', '50'),
         )
-        req_list.append(grequests.get(board_url, headers=headers, params=params, cookies=cookies))
+        req_list.append(grequests.get(
+            board_url, headers=headers, params=params, cookies=cookies))
 
     res_list = grequests.map(req_list)
     return res_list
+
 
 def team_output(res_list):
     teams = {}
@@ -71,7 +79,8 @@ def team_output(res_list):
                 teams[team_id] = _team
     if len(teams.keys()) > 0:
         output("team.json", teams)
-                    
+
+
 def run_output(res_list):
     run = []
     for item in res_list:
@@ -87,7 +96,7 @@ def run_output(res_list):
                     _run = team['problemScores'][key]
                     if int(_run['score']) == 300:
                         total_time -= int(_run['acceptTime'])
-                
+
                 penalty_num = total_time // penalty
 
                 for key in team['problemScores']:
@@ -117,12 +126,13 @@ def run_output(res_list):
                         'timestamp': timestamp,
                         'problem_id': p_id,
                         'status': 'incorrect'
-                    } 
+                    }
                     if int(_run['score']) == ac_score:
                         run_['status'] = 'correct'
                     run.append(run_)
     if len(run) > 0:
         output('run.json', run)
+
 
 def sync():
     while True:
@@ -137,5 +147,6 @@ def sync():
             print(e)
         print("sleeping...")
         time.sleep(20)
+
 
 sync()

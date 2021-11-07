@@ -1,41 +1,48 @@
 # at the beginning of the script
+import time
+import os
+from os import path
+import grequests
+import json
+import requests
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import requests
-import json
-import grequests
-from os import path
-import os
-import time
 
 def json_output(data):
     return json.dumps(data, sort_keys=False, indent=4, separators=(',', ':'), ensure_ascii=False)
+
 
 def output(filename, data):
     with open(path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
+
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
 
+
 def get_now():
     return int(round(time.time() * 1000))
 
+
 def get_timestamp(dt):
-    #转换成时间数组
+    # 转换成时间数组
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    #转换成时间戳
+    # 转换成时间戳
     timestamp = time.mktime(timeArray)
     return int(round(timestamp * 1000))
+
 
 def get_time_diff(l, r):
     return int((r - l) // 1000)
 
+
 def ensure_dir(s):
     if not os.path.exists(s):
         os.makedirs(s)
+
 
 _params = json_input('params.json')
 
@@ -58,6 +65,7 @@ print(start_time)
 print(end_time)
 
 ensure_dir(data_dir)
+
 
 def fetch():
     total = 0
@@ -85,10 +93,12 @@ def fetch():
             ('_', get_now()),
             ('page', str(i)),
         )
-        req_list.append(grequests.get(board_url, headers=headers, params=params))
+        req_list.append(grequests.get(
+            board_url, headers=headers, params=params))
 
     res_list = grequests.map(req_list)
     return res_list
+
 
 def team_output(res_list):
     teams = {}
@@ -116,7 +126,8 @@ def team_output(res_list):
             teams[team_id] = _team
     if len(teams.keys()) > 0:
         output("team.json", teams)
-                    
+
+
 def run_output(res_list):
     run = []
     for item in res_list:
@@ -131,7 +142,8 @@ def run_output(res_list):
                 status = 'incorrect'
                 if problem['accepted']:
                     status = 'correct'
-                    timestamp = get_time_diff(start_time, int(problem['acceptedTime']))
+                    timestamp = get_time_diff(
+                        start_time, int(problem['acceptedTime']))
                 for j in range(0, problem['failedCount']):
                     run_ = {
                         'team_id': team_id,
@@ -159,6 +171,7 @@ def run_output(res_list):
     if len(run) > 0:
         output('run.json', run)
 
+
 def sync():
     while True:
         print("fetching...")
@@ -173,7 +186,5 @@ def sync():
         print("sleeping...")
         time.sleep(20)
 
+
 sync()
-
-
-

@@ -3,42 +3,50 @@ import json
 from os import path
 import time
 
+
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
+
 
 _params = json_input('params.json')
 data_dir = _params['data_dir']
 penalty = 20
 
+
 def json_output(data):
     return json.dumps(data, sort_keys=False, indent=4, separators=(',', ':'), ensure_ascii=False)
+
 
 def output(filename, data):
     with open(path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
+
 def get_timestamp(dt):
-    #转换成时间数组
+    # 转换成时间数组
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    #转换成时间戳
+    # 转换成时间戳
     timestamp = time.mktime(timeArray)
     return int(timestamp)
 
+
 def get_now():
     return int(round(time.time() * 1000))
+
 
 def fetch():
     if 'board_url' in _params.keys():
         board_url = _params['board_url']
         params = (
             ('t', get_now()),
-        )   
+        )
         response = requests.get(board_url, params=params)
         return json.loads(response.text)
     else:
         board_file = _params['board_file']
         return json_input(board_file)
+
 
 def team_output(res):
     team = {}
@@ -63,8 +71,10 @@ def team_output(res):
     if len(team.keys()) > 0:
         output("team.json", team)
 
+
 def Accepted(result):
     return result == 'AC' or result == 'FB'
+
 
 def run_output(res):
     run = []
@@ -85,11 +95,11 @@ def run_output(res):
             status = 'incorrect'
             if Accepted(problem['result']):
                 status = 'correct'
-            
+
             timestamp = int(problem['time'][0]) * 60
-            
+
             tries = int(problem['tries'])
-            
+
             if status == 'correct':
                 tries -= 1
                 if tries < penalty_num:
@@ -104,7 +114,7 @@ def run_output(res):
                 _run['problem_id'] = problem_id
                 run.append(_run)
 
-            if tries > 0: 
+            if tries > 0:
                 for j in range(0, tries):
                     _run = {}
                     _run['team_id'] = team_id
@@ -114,6 +124,7 @@ def run_output(res):
                     run.append(_run)
     if len(run) > 0:
         output('run.json', run)
+
 
 def sync():
     while True:
@@ -128,5 +139,6 @@ def sync():
             print(e)
         print("sleeping...")
         time.sleep(20)
+
 
 sync()
