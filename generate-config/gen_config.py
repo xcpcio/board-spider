@@ -39,23 +39,24 @@ def generate_problem_label(num):
 
 
 def generate_balloon_color(num):
-    default_balloon_color = [
-        {'background_color': 'rgba(189, 14, 14, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(255, 144, 228, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(255, 255, 255, 0.7)', 'color': '#000'},
-        {'background_color': 'rgba(38, 185, 60, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(239, 217, 9, 0.7)', 'color': '#000'},
-        {'background_color': 'rgba(243, 88, 20, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(12, 76, 138, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(156, 155, 155, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(4, 154, 115, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(159, 19, 236, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(42, 197, 202, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(142, 56, 54, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(0, 0, 0, 0.7)', 'color': '#fff'},
-    ]
-
     return default_balloon_color[:num]
+
+
+default_balloon_color = [
+    {'background_color': 'rgba(189, 14, 14, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(255, 144, 228, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(255, 255, 255, 0.7)', 'color': '#000'},
+    {'background_color': 'rgba(38, 185, 60, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(239, 217, 9, 0.7)', 'color': '#000'},
+    {'background_color': 'rgba(243, 88, 20, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(12, 76, 138, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(156, 155, 155, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(4, 154, 115, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(159, 19, 236, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(42, 197, 202, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(142, 56, 54, 0.7)', 'color': '#fff'},
+    {'background_color': 'rgba(0, 0, 0, 0.7)', 'color': '#fff'},
+]
 
 
 data_dir = "./data"
