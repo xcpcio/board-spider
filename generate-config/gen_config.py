@@ -4,10 +4,6 @@ import json
 import time
 
 
-def json_output(data):
-    return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
-
-
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
@@ -24,8 +20,17 @@ def get_timestamp(dt):
     return int(timestamp)
 
 
-def output(filename, data):
-    with open(path.join(data_dir, filename), 'w') as f:
+def json_output(data):
+    return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
+
+
+def output(filename, data, if_not_exists=False):
+    dir_name = path.join(data_dir, filename)
+
+    if if_not_exists and path.exists(dir_name):
+        return
+
+    with open(dir_name, 'w') as f:
         f.write(json_output(data))
 
 
@@ -53,8 +58,7 @@ def generate_balloon_color(num):
     return default_balloon_color[:num]
 
 
-raw_dir = "raw"
-data_dir = ""
+data_dir = "./data"
 
 problem_num = 13
 
@@ -92,9 +96,7 @@ config = {
 }
 
 
-def config_out():
-    output("config.json", config)
-
-
 mkdir(data_dir)
-config_out()
+output("config.json", config)
+output("team.json", "{}", True)
+output("run.json", "[]", True)
