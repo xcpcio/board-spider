@@ -37,10 +37,11 @@ def get_now():
 
 
 def get_js_object(js_code, key):
-    text = js_code.lstrip("var {} =".format(key)).rstrip(";\n ")
+    text = js_code
+    text = text[text.find("=") + 1:]
+    text = text[:text.rfind(";")]
     text = "JSON.stringify(" + text + ")"
     text = execjs.eval(text)
-
     return json.loads(text)
 
 
