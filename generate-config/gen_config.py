@@ -99,5 +99,5 @@ config = {
 
 mkdir(data_dir)
 output("config.json", config)
-output("team.json", "{}", True)
-output("run.json", "[]", True)
+output("team.json", {}, True)
+output("run.json", [], True)
