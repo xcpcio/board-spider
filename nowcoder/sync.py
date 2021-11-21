@@ -1,4 +1,3 @@
-# at the beginning of the script
 import time
 import os
 from os import path
@@ -10,7 +9,7 @@ gevent.monkey.patch_all()
 
 
 def json_output(data):
-    return json.dumps(data, sort_keys=False, indent=4, separators=(',', ':'), ensure_ascii=False)
+    return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
 
 
 def output(filename, data):
@@ -28,9 +27,7 @@ def get_now():
 
 
 def get_timestamp(dt):
-    # 转换成时间数组
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    # 转换成时间戳
     timestamp = time.mktime(timeArray)
     return int(round(timestamp * 1000))
 
@@ -81,6 +78,7 @@ def fetch():
         if res['code'] == 0:
             total = res['data']['basicInfo']['pageCount']
             break
+
     print(total)
 
     req_list = []
@@ -124,6 +122,7 @@ def team_output(res_list):
                 if 'official' in _team.keys():
                     del _team['official']
             teams[team_id] = _team
+
     if len(teams.keys()) > 0:
         output("team.json", teams)
 
@@ -144,6 +143,7 @@ def run_output(res_list):
                     status = 'correct'
                     timestamp = get_time_diff(
                         start_time, int(problem['acceptedTime']))
+
                 for j in range(0, problem['failedCount']):
                     run_ = {
                         'team_id': team_id,
@@ -152,6 +152,7 @@ def run_output(res_list):
                         'status': 'incorrect'
                     }
                     run.append(run_)
+
                 for j in range(0, problem['waitingJudgeCount']):
                     run_ = {
                         'team_id': team_id,
@@ -160,6 +161,7 @@ def run_output(res_list):
                         'status': 'pending'
                     }
                     run.append(run_)
+
                 if status == 'correct':
                     run_ = {
                         'team_id': team_id,
@@ -168,6 +170,7 @@ def run_output(res_list):
                         'status': 'correct'
                     }
                     run.append(run_)
+
     if len(run) > 0:
         output('run.json', run)
 
@@ -183,8 +186,9 @@ def sync():
         except Exception as e:
             print("fetch failed...")
             print(e)
+
         print("sleeping...")
-        time.sleep(20)
+        time.sleep(10)
 
 
 sync()
