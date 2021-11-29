@@ -112,7 +112,7 @@ def team_output(res_list):
             _team = {}
             _team['name'] = team_name
             _team['organization'] = team_organization
-            if _team['name'][0] == '☆':
+            if _team['name'][0] == '✰':
                 _team['unofficial'] = 1
                 _team['name'] = team_name[1:]
             else:
