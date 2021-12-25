@@ -94,9 +94,10 @@ def team_output(teams):
         if 'unofficial' in type:
             new_item['unofficial'] = 1
         else:
-            for tp in type:
-                if tp == 'type1':
-                    new_item['official'] = 1
+            new_item['official'] = 1
+
+        if 'girls' in type:
+            new_item['girl'] = 1
 
     if len(team) > 0:
         output("team.json", team)
@@ -109,6 +110,9 @@ def run_output(runs):
     run = []
 
     for item in run_list:
+        if item[2] < 0:
+            continue
+
         new_item = {}
         new_item['team_id'] = item[0]
         new_item['problem_id'] = ord(item[1]) - ord('A')
