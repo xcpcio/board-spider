@@ -105,22 +105,27 @@ def team_output(res_list):
         item = item['data']
         for team in item['rankData']:
             team_id = team['uid']
-            team_name = team['userName']
+            team_name = team['userName'].strip()
             team_organization = '---'
+
             if 'school' in team.keys():
                 team_organization = team['school']
+
             _team = {}
             _team['name'] = team_name
             _team['organization'] = team_organization
-            if _team['name'][0] == '✰':
+
+            if len(_team['name']) >= 3 and _team['name'][:3] == '***':
                 _team['unofficial'] = 1
-                _team['name'] = team_name[1:]
+                _team['name'] = team_name[3:]
             else:
                 _team['official'] = 1
+
             if team_organization in unofficial_organization or team_name in unofficial_team_name:
                 _team['unofficial'] = 1
                 if 'official' in _team.keys():
                     del _team['official']
+
             teams[team_id] = _team
 
     if len(teams.keys()) > 0:
