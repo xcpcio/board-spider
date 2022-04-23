@@ -2,6 +2,7 @@ import os
 from bs4 import BeautifulSoup
 import json
 import re
+import time
 
 RE_SOLUTION_AC_TYPE1 = re.compile(r'\d+/\d+$')
 RE_SOLUTION_AC_TYPE2 = re.compile(r'\d+:\d+:\d+ \(\d+\)$')
@@ -44,9 +45,7 @@ def getorganization(row):
 
 def getproblemlist(row):
     global col_problem_start, col_problem_end
-    if col_problem_end == -1:
-        return row[col_problem_start:col_problem_end]
-    return row[col_problem_start:]
+    return row[col_problem_start:col_problem_end]
 
 
 def calc2seconds(timestr: str):
@@ -111,8 +110,8 @@ def isofficalteam(name: str):
     return name.find('*') != -1
 
 
-def teamparser(board_content: str, contest_name: str):
-    dom = BeautifulSoup(board_content, 'lxml').html.body.table
+def teamparser(dom, contest_name: str):
+    # dom = BeautifulSoup(board_content, 'lxml').html.body.table
     rows = [x for x in dom.contents if x != '\n']
     # row = [x for x in rows[0].contents if x != '\n']
     # col_num = 0
@@ -166,8 +165,8 @@ def parserproblem(problem, team_id: int, problem_id: int):
     return res
 
 
-def solutionparser(board_content: str, contest_name: str):
-    dom = BeautifulSoup(board_content, 'lxml').html.body.table
+def solutionparser(dom, contest_name: str):
+    # dom = BeautifulSoup(board_content, 'lxml').html.body.table
     rows = [x for x in dom.contents if x != '\n'][1:]
     team_id = 0
     res = []
@@ -184,6 +183,83 @@ def solutionparser(board_content: str, contest_name: str):
         f.write(json.dumps(res, ensure_ascii=False))
 
 
+siteinfo = dict()
+
+
+def configparser(contest_dir: str, contest_name: str, default_name: str):
+    problem_num = col_problem_end-col_problem_start
+
+    global siteinfo
+    site = contest_dir + '/' + default_name
+
+    def generate_problem_label(num):
+        return [chr(ord('A') + i) for i in range(num)]
+
+    def generate_balloon_color(num):
+        return default_balloon_color[:num]
+
+    def get_timestamp(dt):
+        if dt is None:
+            return None
+        timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
+        timestamp = time.mktime(timeArray)
+        return int(timestamp)
+
+    default_balloon_color = [
+        {'background_color': 'rgba(189, 14, 14, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(255, 144, 228, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(255, 255, 255, 0.7)', 'color': '#000'},
+        {'background_color': 'rgba(38, 185, 60, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(239, 217, 9, 0.7)', 'color': '#000'},
+        {'background_color': 'rgba(243, 88, 20, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(12, 76, 138, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(156, 155, 155, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(4, 154, 115, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(159, 19, 236, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(42, 197, 202, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(142, 56, 54, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(0, 0, 0, 0.7)', 'color': '#fff'},
+    ]
+
+    group = {
+        'official': '正式队伍',
+        'unofficial': '打星队伍',
+    }
+
+    status_time_display = {
+        'correct': 1,
+    }
+    if siteinfo.get(site):
+        config = {
+            'contest_name': siteinfo[site]['title'],
+            'start_time': get_timestamp(siteinfo[site].get('start_time')),
+            'end_time': get_timestamp(siteinfo[site].get('end_time')),
+            'frozen_time': 0,
+            'problem_id': generate_problem_label(problem_num),
+            'group': group,
+            'organization': 'School',
+            'status_time_display': status_time_display,
+            'penalty': 20 * 60,
+            'balloon_color': generate_balloon_color(problem_num),
+        }
+    else:
+        config = {
+            'contest_name': default_name,
+            'start_time': None,
+            'end_time': None,
+            'frozen_time': 0,
+            'problem_id': generate_problem_label(problem_num),
+            'group': group,
+            'organization': 'School',
+            'status_time_display': status_time_display,
+            'penalty': 20 * 60,
+            'balloon_color': generate_balloon_color(problem_num),
+        }
+    with open(contest_name + "config.json", "w", encoding='utf-8') as f:
+        f.write(json.dumps(config, sort_keys=False, separators=(',', ':'), ensure_ascii=False))
+    return None
+
+
 def single_test(file_name: str):
     with open(file_name, 'r', encoding='utf-8') as f:
         contest_name = re.split(r'[.\\]', file_name)[-2]
@@ -195,10 +271,29 @@ def single_test(file_name: str):
         solutionparser(board_content, OUTPUT_DIR + contest_name + "\\")
 
 
+def showtopic(dom):
+    row = [x for x in dom.contents if x != '\n'][0]
+    topics = [x for x in row.contents if x != '\n']
+    global col_problem_start, col_problem_end
+    cur = 'A'
+    index = 0
+    for item in topics:
+        if item.get_text(strip=True)[0] == 'A':
+            col_problem_start = col_problem_end = index
+        if item.get_text(strip=True)[0] == cur:
+            cur = chr(ord(cur) + 1)
+            col_problem_end += 1
+        print(item.get_text(strip=True).ljust(15, ' '), end='')
+        index += 1
+    print('')
+    # print(col_problem_start, col_problem_end)
+
+
 if __name__ == '__main__':
     with open('path.config', 'r', encoding='utf-8') as f:
         WORK_DIR = f.readline().strip()
         OUTPUT_DIR = f.readline().strip()
+        CONFIG_DIR = f.readline().strip()
     print(WORK_DIR)
     print(OUTPUT_DIR)
     # WORK_DIR = input('work path:\n')
@@ -207,8 +302,21 @@ if __name__ == '__main__':
         os.chdir(WORK_DIR)
     else:
         exit(-1)
+    # for file_name in os.listdir():
+    #     if os.path.isdir(file_name):
+    #         continue
+    #     with open(file_name, 'r', encoding='utf-8') as f:
+    #         board_content = f.read()
+    #         dom = BeautifulSoup(board_content, 'lxml').html.body.table
+    #         showtopic(dom)
+    # exit(-1)
     if not os.path.isdir(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
+    contest_dir = '/' + '/'.join(WORK_DIR.split('\\')[-2:])
+    with open(CONFIG_DIR, 'r', encoding='utf-8') as f:
+        siteinfo = json.loads(f.read())
+    print(contest_dir)
+    # exit(0)
     OUTPUT_DIR += '\\'
     for file_name in os.listdir():
         if os.path.isdir(file_name):
@@ -218,11 +326,11 @@ if __name__ == '__main__':
             board_content = f.read()
             print(contest_name)
             # global col_name, col_problem_start, col_organization, col_problem_end
-            if contest_name.find('online') != -1:
-                col_organization, col_name, col_problem_start, col_problem_end = 1, 3, 6, 0
-            else:
-                col_organization, col_name, col_problem_start, col_problem_end = 1, 3, 6, -1
             if not os.path.isdir(OUTPUT_DIR + contest_name):
                 os.mkdir(OUTPUT_DIR + contest_name)
-            teamparser(board_content, OUTPUT_DIR + contest_name + "\\")
-            solutionparser(board_content, OUTPUT_DIR + contest_name + "\\")
+            dom = BeautifulSoup(board_content, 'lxml').html.body.table
+            showtopic(dom)
+            # teamparser(dom, OUTPUT_DIR + contest_name + "\\")
+            solutionparser(dom, OUTPUT_DIR + contest_name + "\\")
+            configparser(contest_dir, OUTPUT_DIR + contest_name + "\\", contest_name)
+            # exit(0)
