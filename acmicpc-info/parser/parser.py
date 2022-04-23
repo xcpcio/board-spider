@@ -152,6 +152,7 @@ def parserproblem(problem, team_id: int, problem_id: int):
     res = list()
     if "ac" in problem['class'] or "firstac" in problem['class'] or "fb" in problem['class']:
         times, actime = getacinfo(problem.get_text(strip=True))
+        actime *= 1000
         for delta in range(times):
             run = {'team_id': team_id, 'problem_id': problem_id, 'timestamp': max(0, actime - delta),
                    'status': 'correct' if delta == 0 else 'incorrect'}
@@ -187,10 +188,15 @@ siteinfo = dict()
 
 
 def configparser(contest_dir: str, contest_name: str, default_name: str):
-    problem_num = col_problem_end-col_problem_start
+    problem_num = col_problem_end - col_problem_start
 
     global siteinfo
     site = contest_dir + '/' + default_name
+    global CONTEST_TYPE, YEAR
+    default_name = CONTEST_TYPE.upper() + ' ' + ' '.join(default_name.split('_'))
+
+    # print(default_name, site)
+    # return None
 
     def generate_problem_label(num):
         return [chr(ord('A') + i) for i in range(num)]
@@ -199,8 +205,6 @@ def configparser(contest_dir: str, contest_name: str, default_name: str):
         return default_balloon_color[:num]
 
     def get_timestamp(dt):
-        if dt is None:
-            return None
         timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
         timestamp = time.mktime(timeArray)
         return int(timestamp)
@@ -245,8 +249,8 @@ def configparser(contest_dir: str, contest_name: str, default_name: str):
     else:
         config = {
             'contest_name': default_name,
-            'start_time': None,
-            'end_time': None,
+            'start_time': get_timestamp(YEAR + "-09-01 09:00:00"),
+            'end_time': get_timestamp(YEAR + "-09-01 14:00:00"),
             'frozen_time': 0,
             'problem_id': generate_problem_label(problem_num),
             'group': group,
@@ -293,11 +297,13 @@ if __name__ == '__main__':
     with open('path.config', 'r', encoding='utf-8') as f:
         WORK_DIR = f.readline().strip()
         OUTPUT_DIR = f.readline().strip()
+        CONTEST_TYPE = f.readline().strip()
+        YEAR = f.readline().strip()
         CONFIG_DIR = f.readline().strip()
+    WORK_DIR = WORK_DIR + CONTEST_TYPE + '/' + YEAR
+    OUTPUT_DIR = OUTPUT_DIR + CONTEST_TYPE + '/' + YEAR
     print(WORK_DIR)
     print(OUTPUT_DIR)
-    # WORK_DIR = input('work path:\n')
-    # OUTPUT_DIR = input('output path:\n')
     if os.path.isdir(WORK_DIR):
         os.chdir(WORK_DIR)
     else:
@@ -312,7 +318,7 @@ if __name__ == '__main__':
     # exit(-1)
     if not os.path.isdir(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
-    contest_dir = '/' + '/'.join(WORK_DIR.split('\\')[-2:])
+    contest_dir = "/" + CONTEST_TYPE.lower() + "/" + YEAR
     with open(CONFIG_DIR, 'r', encoding='utf-8') as f:
         siteinfo = json.loads(f.read())
     print(contest_dir)
@@ -325,7 +331,6 @@ if __name__ == '__main__':
             contest_name = file_name.split('.')[-2]
             board_content = f.read()
             print(contest_name)
-            # global col_name, col_problem_start, col_organization, col_problem_end
             if not os.path.isdir(OUTPUT_DIR + contest_name):
                 os.mkdir(OUTPUT_DIR + contest_name)
             dom = BeautifulSoup(board_content, 'lxml').html.body.table
