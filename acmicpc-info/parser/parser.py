@@ -175,7 +175,7 @@ def parserproblem(problem, team_id: int, problem_id: int):
         times = getwainfo(problem.get_text(strip=True))
         for delta in range(times):
             run = {'team_id': str(team_id), 'problem_id': problem_id, 'timestamp': delta,
-                   'status': 'correct' if delta == 0 else 'incorrect'}
+                   'status': 'incorrect'}
             res.append(run)
     return res
 
@@ -357,7 +357,7 @@ if __name__ == '__main__':
                 os.mkdir(OUTPUT_DIR + CONTEST_NAME)
             dom = BeautifulSoup(board_content, 'lxml').html.body.table
             showtopic(dom)
-            teamparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
+            # teamparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
             solutionparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
             # configparser(contest_dir, OUTPUT_DIR + contest_name + "\\", contest_name)
             # exit(0)
