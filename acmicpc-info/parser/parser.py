@@ -20,6 +20,7 @@ RE_SOLUTION_WA_TYPE4 = re.compile(r'\(-\d+\)$')
 RE_SOLUTION_WA_TYPE5 = re.compile(r'-\d+/[-]+$')
 RE_SOLUTION_WA_TYPE6 = re.compile(r'-\d+$')
 
+# ---------------------modify here to adapt different board------------
 col_name = 3
 col_organization = 1
 col_problem_start = 6
@@ -28,6 +29,10 @@ col_problem_end = -1
 
 def get_team_name_str(row):
     global col_name
+    # name = row[col_name].get_text(strip=True).split('(')[-1]
+    # return name
+    # name = row[col_name].get_text().split()[0]
+    # return '-'.join(name.split('-')[1:])
     return row[col_name].get_text(strip=True)
 
 
@@ -40,6 +45,12 @@ def get_team_name(name):
 
 def getorganization(row):
     global col_organization
+    # name = row[col_name].get_text(strip=True).split('-')[0]
+    # if isofficalteam(name):
+    #     return name[3:]
+    # return name
+    # name = row[col_name].get_text().split()[1]
+    # return name
     return row[col_organization].get_text(strip=True)
 
 
@@ -110,6 +121,8 @@ def isofficalteam(name: str):
     return name.find('*') != -1
 
 
+# -----------------------------------------------------------------------
+
 def teamparser(dom, contest_name: str):
     # dom = BeautifulSoup(board_content, 'lxml').html.body.table
     rows = [x for x in dom.contents if x != '\n']
@@ -128,7 +141,9 @@ def teamparser(dom, contest_name: str):
     #                                                                                     'col_problem_end\n').split())
     rows = rows[1:]
     team_id = 0
-    res = []
+    res = dict()
+    global CONTEST_TYPE, CONTEST_NAME
+
     for row in rows:
         team_id += 1
         row = [x for x in row.contents if x != '\n']
@@ -136,14 +151,14 @@ def teamparser(dom, contest_name: str):
         name = get_team_name(get_team_name_str(row))
         if name == "":
             name = " "
-        team["team_id"] = team_id
+        team["team_id"] = str(team_id)
         team["name"] = name
         team["organization"] = getorganization(row)
         if isofficalteam(name):
             team["unofficial"] = 1
         else:
             team["official"] = 1
-        res.append(team)
+        res[str(team_id)] = team
     with open(contest_name + "team.json", 'w', encoding='utf-8') as f:
         f.write(json.dumps(res, ensure_ascii=False))
 
@@ -152,15 +167,14 @@ def parserproblem(problem, team_id: int, problem_id: int):
     res = list()
     if "ac" in problem['class'] or "firstac" in problem['class'] or "fb" in problem['class']:
         times, actime = getacinfo(problem.get_text(strip=True))
-        actime *= 1000
         for delta in range(times):
-            run = {'team_id': team_id, 'problem_id': problem_id, 'timestamp': max(0, actime - delta),
+            run = {'team_id': str(team_id), 'problem_id': problem_id, 'timestamp': max(0, actime - delta),
                    'status': 'correct' if delta == 0 else 'incorrect'}
             res.append(run)
     else:
         times = getwainfo(problem.get_text(strip=True))
         for delta in range(times):
-            run = {'team_id': team_id, 'problem_id': problem_id, 'timestamp': delta,
+            run = {'team_id': str(team_id), 'problem_id': problem_id, 'timestamp': delta,
                    'status': 'correct' if delta == 0 else 'incorrect'}
             res.append(run)
     return res
@@ -238,7 +252,7 @@ def configparser(contest_dir: str, contest_name: str, default_name: str):
             'contest_name': siteinfo[site]['title'],
             'start_time': get_timestamp(siteinfo[site].get('start_time')),
             'end_time': get_timestamp(siteinfo[site].get('end_time')),
-            'frozen_time': 0,
+            'frozen_time': 60 * 60,
             'problem_id': generate_problem_label(problem_num),
             'group': group,
             'organization': 'School',
@@ -251,7 +265,7 @@ def configparser(contest_dir: str, contest_name: str, default_name: str):
             'contest_name': default_name,
             'start_time': get_timestamp(YEAR + "-09-01 09:00:00"),
             'end_time': get_timestamp(YEAR + "-09-01 14:00:00"),
-            'frozen_time': 0,
+            'frozen_time': 60 * 60,
             'problem_id': generate_problem_label(problem_num),
             'group': group,
             'organization': 'School',
@@ -262,17 +276,6 @@ def configparser(contest_dir: str, contest_name: str, default_name: str):
     with open(contest_name + "config.json", "w", encoding='utf-8') as f:
         f.write(json.dumps(config, sort_keys=False, separators=(',', ':'), ensure_ascii=False))
     return None
-
-
-def single_test(file_name: str):
-    with open(file_name, 'r', encoding='utf-8') as f:
-        contest_name = re.split(r'[.\\]', file_name)[-2]
-        board_content = f.read()
-        print(contest_name)
-        if not os.path.isdir(OUTPUT_DIR + contest_name):
-            os.mkdir(OUTPUT_DIR + contest_name)
-        teamparser(board_content, OUTPUT_DIR + contest_name + "\\")
-        solutionparser(board_content, OUTPUT_DIR + contest_name + "\\")
 
 
 def showtopic(dom):
@@ -293,7 +296,26 @@ def showtopic(dom):
     # print(col_problem_start, col_problem_end)
 
 
+def single_test(file_name: str, OUTPUT_DIR: str):
+    with open(file_name, 'r', encoding='utf-8') as f:
+        CONTEST_NAME = file_name.split('.')[-2]
+        board_content = f.read()
+        print(CONTEST_NAME)
+        if not os.path.isdir(OUTPUT_DIR + CONTEST_NAME):
+            os.mkdir(OUTPUT_DIR + CONTEST_NAME)
+        dom = BeautifulSoup(board_content, 'lxml').html.body.table
+        showtopic(dom)
+        teamparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
+        solutionparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
+
+
 if __name__ == '__main__':
+    # WORK_DIR = "D:\\XCPCIO\\XCPCIO-Board-Data\\origin-data\\icpc\\2009"
+    # FILE_NAME = "whu_onsite.html"
+    # OUTPUT_DIR = "D:\\XCPCIO\\XCPCIO-Board-Data\\data\\icpc\\2009\\"
+    # os.chdir(WORK_DIR)
+    # single_test(FILE_NAME, OUTPUT_DIR)
+    # exit(0)
     with open('path.config', 'r', encoding='utf-8') as f:
         WORK_DIR = f.readline().strip()
         OUTPUT_DIR = f.readline().strip()
@@ -328,14 +350,14 @@ if __name__ == '__main__':
         if os.path.isdir(file_name):
             continue
         with open(file_name, 'r', encoding='utf-8') as f:
-            contest_name = file_name.split('.')[-2]
+            CONTEST_NAME = file_name.split('.')[-2]
             board_content = f.read()
-            print(contest_name)
-            if not os.path.isdir(OUTPUT_DIR + contest_name):
-                os.mkdir(OUTPUT_DIR + contest_name)
+            print(CONTEST_NAME)
+            if not os.path.isdir(OUTPUT_DIR + CONTEST_NAME):
+                os.mkdir(OUTPUT_DIR + CONTEST_NAME)
             dom = BeautifulSoup(board_content, 'lxml').html.body.table
             showtopic(dom)
-            # teamparser(dom, OUTPUT_DIR + contest_name + "\\")
-            solutionparser(dom, OUTPUT_DIR + contest_name + "\\")
-            configparser(contest_dir, OUTPUT_DIR + contest_name + "\\", contest_name)
+            teamparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
+            solutionparser(dom, OUTPUT_DIR + CONTEST_NAME + "\\")
+            # configparser(contest_dir, OUTPUT_DIR + contest_name + "\\", contest_name)
             # exit(0)
