@@ -1,4 +1,4 @@
-from os import path
+import os
 import requests
 import json
 import time
@@ -12,6 +12,29 @@ def json_input(path):
         return json.load(f)
 
 
+def json_output(data):
+    return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
+
+
+def output(target_path, data, if_not_exists=False):
+    if if_not_exists and os.path.exists(target_path):
+        return
+
+    with open(target_path, 'w') as f:
+        f.write(json_output(data))
+
+
+def mkdir(_path):
+    if not os.path.exists(_path):
+        os.makedirs(_path)
+
+
+def get_timestamp(dt):
+    timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
+    timestamp = time.mktime(timeArray)
+    return int(timestamp)
+
+
 _params = json_input('params.json')
 cookies = _params['cookies']
 headers = _params['headers']
@@ -20,15 +43,6 @@ board_url = _params['board_url']
 
 penalty = 20
 ac_score = 300
-
-
-def json_output(data):
-    return json.dumps(data, sort_keys=False, indent=4, separators=(',', ':'), ensure_ascii=False)
-
-
-def output(filename, data):
-    with open(path.join(data_dir, filename), 'w') as f:
-        f.write(json_output(data))
 
 
 def fetch():
@@ -79,8 +93,9 @@ def team_output(res_list):
                 if _id[0] == 'F':
                     _team['girl'] = 1
                 teams[team_id] = _team
+
     if len(teams.keys()) > 0:
-        output("team.json", teams)
+        output(os.path.join(data_dir, "team.json"), teams)
 
 
 def run_output(res_list):
@@ -134,12 +149,13 @@ def run_output(res_list):
                     run.append(run_)
 
     if len(run) > 0:
-        output('run.json', run)
+        output(os.path.join(data_dir, 'run.json'), run)
 
 
 def sync():
     while True:
         print("fetching...")
+
         try:
             res_list = fetch()
             team_output(res_list)
@@ -148,8 +164,10 @@ def sync():
         except Exception as e:
             print("fetch failed...")
             print(e)
+
         print("sleeping...")
         time.sleep(20)
 
 
-sync()
+if __name__ == "__main__":
+    sync()
