@@ -12,7 +12,9 @@
         "gevent",
         "grequests",
         "icpc",
+        "KHTML",
         "mktime",
+        "Referer",
         "XCPCIO"
     ],
 }
