@@ -5,6 +5,7 @@
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
+    "python.languageServer": "Pylance",
     "cSpell.words": [
         "buildx",
         "DOCKERHUB",
