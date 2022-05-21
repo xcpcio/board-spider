@@ -31,6 +31,22 @@ def get_timestamp(dt):
     return int(timestamp)
 
 
+def url_to_base64(url):
+    import base64
+    import requests as req
+    from io import BytesIO
+
+    if os.path.isfile(url):
+        f = open(url, 'rb')
+        img_data_b64 = base64.b64encode(f.read())
+        f.close()
+    else:
+        response = req.get(url)
+        img_data_b64 = base64.b64encode(BytesIO(response.content).read())
+
+    return bytes.decode(img_data_b64)
+
+
 def generate_problem_label(num):
     return [chr(ord('A') + i) for i in range(num)]
 
