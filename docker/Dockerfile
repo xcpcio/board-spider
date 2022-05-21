@@ -11,4 +11,6 @@ RUN cd board-spider \
     && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
     && nvm install 16
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["/app/docker_entry.sh"]
+
+CMD ["primary"]
