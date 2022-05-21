@@ -11,6 +11,7 @@
         "DOCKERHUB",
         "gevent",
         "grequests",
+        "icpc",
         "mktime",
         "XCPCIO"
     ],
