@@ -1,5 +1,7 @@
 .DS_Store
 
+params.json
+
 data/
 venv/
 log/
