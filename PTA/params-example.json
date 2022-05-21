@@ -1,20 +1,13 @@
 {
-    "cookies": {
-        "JSESSIONID": "",
-        "__snaker__captcha": "5QvrNUkhENPvX0vY",
-        "gdxidpyhxdE": "",
-        "_9755xjdesxxd_": "32",
-        "PTASession": ""
-    },
+    "cookies": "",
     "headers": {
-        "User-Agent": "",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36",
         "Accept": "application/json;charset=UTF-8",
         "Accept-Language": "zh-CN",
         "X-Lollipop": "",
         "X-Marshmallow": "2061554085%0",
         "Content-Type": "application/json;charset=UTF-8",
         "Connection": "keep-alive",
-        "Referer": "https://pintia.cn/problem-sets/1322401187006472192/rankings",
         "Pragma": "no-cache",
         "Cache-Control": "no-cache"
     },

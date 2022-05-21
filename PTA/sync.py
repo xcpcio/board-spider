@@ -1,10 +1,13 @@
-import os
+import grequests
 import requests
+import urllib3
+import os
 import json
 import time
-import grequests
+from http.cookies import SimpleCookie
 import gevent.monkey
-gevent.monkey.patch_all()
+gevent.monkey.patch_all(ssl=False)
+urllib3.disable_warnings()
 
 
 def json_input(path):
@@ -35,11 +38,24 @@ def get_timestamp(dt):
     return int(timestamp)
 
 
+def get_cookies(raw_cookies: str):
+    cookie = SimpleCookie()
+    cookie.load(raw_cookies)
+
+    # Even though SimpleCookie is dictionary-like, it internally uses a Morsel object
+    # which is incompatible with requests. Manually construct a dictionary instead.
+    cookies = {k: v.value for k, v in cookie.items()}
+
+    return cookies
+
+
 _params = json_input('params.json')
 cookies = _params['cookies']
 headers = _params['headers']
 data_dir = _params['data_dir']
 board_url = _params['board_url']
+
+headers["Referer"] = board_url
 
 penalty = 20
 ac_score = 300
@@ -51,8 +67,11 @@ def fetch():
         ('limit', '50'),
     )
 
+    c = get_cookies(cookies)
+
     response = requests.get(board_url, headers=headers,
-                            params=params, cookies=cookies)
+                            params=params, cookies=c)
+
     total = json.loads(response.text)['total']
 
     print(total)
@@ -64,6 +83,7 @@ def fetch():
             ('page', str(i)),
             ('limit', '50'),
         )
+
         req_list.append(grequests.get(
             board_url, headers=headers, params=params, cookies=cookies))
 
@@ -166,7 +186,7 @@ def sync():
             print(e)
 
         print("sleeping...")
-        time.sleep(20)
+        time.sleep(15)
 
 
 if __name__ == "__main__":
