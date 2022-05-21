@@ -106,6 +106,9 @@ config = {
     'penalty': 20 * 60,
     'medal': medal,
     'balloon_color': generate_balloon_color(problem_num),
+    'logo': {
+        'base64': url_to_base64("https://raw.githubusercontent.com/XCPCIO/xcpc-logo/main/ccpc/ccpc.png")
+    }
 }
 
 
