@@ -130,6 +130,7 @@ def run_output(res_list):
                     if int(_run['score']) == ac_score:
                         run_['status'] = 'correct'
                     run.append(run_)
+
     if len(run) > 0:
         output('run.json', run)
 
