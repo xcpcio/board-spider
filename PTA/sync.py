@@ -1,8 +1,10 @@
+from os import path
 import requests
 import json
-import grequests
-from os import path
 import time
+import grequests
+import gevent.monkey
+gevent.monkey.patch_all()
 
 
 def json_input(path):

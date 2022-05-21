@@ -1,6 +1,7 @@
 pyyaml>=5.4.1
 PyExecJS>=1.5.1
 grequests
+gevent
 beautifulsoup4
 lxml
 html5lib
