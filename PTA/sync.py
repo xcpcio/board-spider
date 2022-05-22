@@ -55,6 +55,12 @@ headers = _params['headers']
 data_dir = _params['data_dir']
 board_url = _params['board_url']
 
+run_frozen_fallback = False
+
+if "run_frozen_fallback" in _params.keys():
+    run_frozen_fallback = _params['run_frozen_fallback']
+    frozen_start_timestamp = _params['frozen_start_timestamp']
+
 headers["Referer"] = board_url
 
 
@@ -62,6 +68,14 @@ penalty = 20
 ac_score = 300
 
 team_data_xlsx_path = "./data/team.xls"
+
+
+def frozen_fallback(runs):
+    for r in runs:
+        if r['timestamp'] >= frozen_start_timestamp:
+            r['status'] = 'pending'
+
+    return runs
 
 
 def get_team_info():
@@ -158,6 +172,7 @@ def team_output(res_list):
 
 def run_output(res_list):
     run = []
+
     for item in res_list:
         item = json.loads(item.text)
         # problem_id = item['commonRankings']['labels']
@@ -219,6 +234,9 @@ def run_output(res_list):
                         run_['status'] = 'correct'
 
                     run.append(run_)
+
+    if run_frozen_fallback:
+        run = frozen_fallback(run)
 
     if len(run) > 0:
         output(os.path.join(data_dir, 'run.json'), run)
