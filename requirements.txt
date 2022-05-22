@@ -5,3 +5,4 @@ gevent
 beautifulsoup4
 lxml
 html5lib
+xlrd
