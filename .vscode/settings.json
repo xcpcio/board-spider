@@ -15,6 +15,7 @@
         "KHTML",
         "mktime",
         "Referer",
-        "XCPCIO"
+        "XCPCIO",
+        "xlrd"
     ],
 }
