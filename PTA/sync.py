@@ -205,35 +205,39 @@ def run_output(res_list):
                     timestamp = int(_run['acceptTime']) * 60
 
                     cnt = int(_run['submitCountSnapshot'])
-                    incorrect_num = cnt - 1
-                    if int(_run['score']) == ac_score:
-                        if penalty_num > incorrect_num:
-                            penalty_num -= incorrect_num
-                        else:
-                            incorrect_num = penalty_num
-                            penalty_num = 0
 
-                    for i in range(0, incorrect_num):
-                        run_ = {
-                            'team_id': team_id,
-                            'timestamp': timestamp,
-                            'problem_id': p_id,
-                            'status': 'incorrect'
-                        }
-
-                        run.append(run_)
+                    pending_cnt = int(
+                        _run['validSubmitCount']) - int(_run['submitCountSnapshot'])
 
                     run_ = {
                         'team_id': team_id,
                         'timestamp': timestamp,
                         'problem_id': p_id,
-                        'status': 'incorrect'
+                        'status': 'incorrect',
                     }
 
-                    if int(_run['score']) == ac_score:
-                        run_['status'] = 'correct'
+                    if cnt > 0:
+                        incorrect_num = cnt - 1
 
-                    run.append(run_)
+                        if int(_run['score']) == ac_score:
+                            if penalty_num > incorrect_num:
+                                penalty_num -= incorrect_num
+                            else:
+                                incorrect_num = penalty_num
+                                penalty_num = 0
+
+                        for i in range(0, incorrect_num):
+                            run_['status'] = 'incorrect'
+                            run.append(run_.copy())
+
+                        if int(_run['score']) == ac_score:
+                            run_['status'] = 'correct'
+
+                        run.append(run_.copy())
+
+                    for i in range(pending_cnt):
+                        run_['status'] = 'pending'
+                        run.append(run_.copy())
 
     if run_frozen_fallback:
         run = frozen_fallback(run)
