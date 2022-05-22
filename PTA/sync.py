@@ -57,8 +57,30 @@ board_url = _params['board_url']
 
 headers["Referer"] = board_url
 
+team_data_xlsx_path = "./data/team.xls"
+
 penalty = 20
 ac_score = 300
+
+
+def get_team_info():
+    import xlrd
+    data = xlrd.open_workbook(team_data_xlsx_path)
+    table = data.sheets()[0]
+    nrows = table.nrows
+    team_info = {}
+
+    for i in range(1, nrows):
+        row = table.row_values(i)
+        key = row[0]
+        team_info[key] = {}
+        team_info[key]["organization"] = row[3]
+        team_info[key]["team_name"] = row[6]
+
+    return team_info
+
+
+team_info = get_team_info()
 
 
 def fetch():
@@ -103,8 +125,8 @@ def team_output(res_list):
                 # school = _name.split('_')[1]
                 # _id = _name.split('_')[0]
                 _team = {}
-                _team['name'] = name
-                # _team['organization'] = school
+                _team['name'] = team_info[team_id]["team_name"]
+                _team['organization'] = team_info[team_id]["organization"]
                 _team['team_id'] = team_id
                 # if _id[0] == '*':
                 #     _team['unofficial'] = 1
@@ -186,14 +208,14 @@ def sync():
     while True:
         print("fetching...")
 
-        # try:
-        res_list = fetch()
-        team_output(res_list)
-        run_output(res_list)
-        print("fetch successfully")
-        # except Exception as e:
-        #     print("fetch failed...")
-        #     print(e)
+        try:
+            res_list = fetch()
+            team_output(res_list)
+            run_output(res_list)
+            print("fetch successfully")
+        except Exception as e:
+            print("fetch failed...")
+            print(e)
 
         print("sleeping...")
         time.sleep(15)
