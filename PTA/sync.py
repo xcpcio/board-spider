@@ -57,10 +57,11 @@ board_url = _params['board_url']
 
 headers["Referer"] = board_url
 
-team_data_xlsx_path = "./data/team.xls"
 
 penalty = 20
 ac_score = 300
+
+team_data_xlsx_path = "./data/team.xls"
 
 
 def get_team_info():
@@ -72,10 +73,17 @@ def get_team_info():
 
     for i in range(1, nrows):
         row = table.row_values(i)
-        key = row[0]
-        team_info[key] = {}
-        team_info[key]["organization"] = row[3]
-        team_info[key]["team_name"] = row[6]
+        team_id = row[0]
+        team_info[team_id] = {}
+        cur_team = team_info[team_id]
+
+        cur_team["organization"] = row[3]
+        cur_team["team_name"] = row[6]
+        cur_team["members"] = []
+
+        for ix in [8, 11, 14]:
+            if len(row[ix]) > 0:
+                cur_team["members"].append(row[ix])
 
     return team_info
 
@@ -116,24 +124,31 @@ def team_output(res_list):
     teams = {}
     for item in res_list:
         item = json.loads(item.text)
+
         for team in item['commonRankings']['commonRankings']:
             if 'studentUser' in team['user'].keys():
                 team_id = team['user']['studentUser']['studentNumber']
-                _name = team['user']['studentUser']['name']
-                name = _name
+
+                # _name = team['user']['studentUser']['name']
+                # name = _name
                 # name = _name.split('_')[2]
                 # school = _name.split('_')[1]
                 # _id = _name.split('_')[0]
+
+                cur_team = team_info[team_id]
                 _team = {}
-                _team['name'] = team_info[team_id]["team_name"]
-                _team['organization'] = team_info[team_id]["organization"]
                 _team['team_id'] = team_id
+                _team['name'] = cur_team['team_name']
+                _team['organization'] = cur_team['organization']
+                _team['members'] = cur_team['members']
+
                 # if _id[0] == '*':
                 #     _team['unofficial'] = 1
                 # else:
                 #     _team['official'] = 1
                 # if _id[0] == 'F':
                 #     _team['girl'] = 1
+
                 _team['official'] = 1
                 teams[team_id] = _team
 
@@ -170,6 +185,7 @@ def run_output(res_list):
                 for key in team['problemScores']:
                     # p_id = key
                     p_id = problem_id[key]
+
                     _run = team['problemScores'][key]
                     timestamp = int(_run['acceptTime']) * 60
 
@@ -189,15 +205,19 @@ def run_output(res_list):
                             'problem_id': p_id,
                             'status': 'incorrect'
                         }
+
                         run.append(run_)
+
                     run_ = {
                         'team_id': team_id,
                         'timestamp': timestamp,
                         'problem_id': p_id,
                         'status': 'incorrect'
                     }
+
                     if int(_run['score']) == ac_score:
                         run_['status'] = 'correct'
+
                     run.append(run_)
 
     if len(run) > 0:
