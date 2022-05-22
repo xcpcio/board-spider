@@ -74,8 +74,6 @@ def fetch():
 
     total = json.loads(response.text)['total']
 
-    print(total)
-
     req_list = []
 
     for i in range(((total + 49) // 50)):
@@ -85,9 +83,10 @@ def fetch():
         )
 
         req_list.append(grequests.get(
-            board_url, headers=headers, params=params, cookies=cookies))
+            board_url, headers=headers, params=params, cookies=c))
 
     res_list = grequests.map(req_list)
+
     return res_list
 
 
@@ -99,19 +98,21 @@ def team_output(res_list):
             if 'studentUser' in team['user'].keys():
                 team_id = team['user']['studentUser']['studentNumber']
                 _name = team['user']['studentUser']['name']
-                name = _name.split('_')[2]
-                school = _name.split('_')[1]
-                _id = _name.split('_')[0]
+                name = _name
+                # name = _name.split('_')[2]
+                # school = _name.split('_')[1]
+                # _id = _name.split('_')[0]
                 _team = {}
                 _team['name'] = name
-                _team['organization'] = school
+                # _team['organization'] = school
                 _team['team_id'] = team_id
-                if _id[0] == '*':
-                    _team['unofficial'] = 1
-                else:
-                    _team['official'] = 1
-                if _id[0] == 'F':
-                    _team['girl'] = 1
+                # if _id[0] == '*':
+                #     _team['unofficial'] = 1
+                # else:
+                #     _team['official'] = 1
+                # if _id[0] == 'F':
+                #     _team['girl'] = 1
+                _team['official'] = 1
                 teams[team_id] = _team
 
     if len(teams.keys()) > 0:
@@ -122,7 +123,15 @@ def run_output(res_list):
     run = []
     for item in res_list:
         item = json.loads(item.text)
-        problem_id = item['commonRankings']['labels']
+        # problem_id = item['commonRankings']['labels']
+
+        problem_id = item["commonRankings"]["labelByIndexTuple"]
+
+        problem_ix = 0
+        for k in problem_id.keys():
+            problem_id[k] = problem_ix
+            problem_ix += 1
+
         for team in item['commonRankings']['commonRankings']:
             if 'studentUser' in team['user'].keys():
                 team_id = team['user']['studentUser']['studentNumber']
@@ -137,7 +146,8 @@ def run_output(res_list):
                 penalty_num = total_time // penalty
 
                 for key in team['problemScores']:
-                    p_id = problem_id.index(key)
+                    # p_id = key
+                    p_id = problem_id[key]
                     _run = team['problemScores'][key]
                     timestamp = int(_run['acceptTime']) * 60
 
@@ -176,14 +186,14 @@ def sync():
     while True:
         print("fetching...")
 
-        try:
-            res_list = fetch()
-            team_output(res_list)
-            run_output(res_list)
-            print("fetch successfully")
-        except Exception as e:
-            print("fetch failed...")
-            print(e)
+        # try:
+        res_list = fetch()
+        team_output(res_list)
+        run_output(res_list)
+        print("fetch successfully")
+        # except Exception as e:
+        #     print("fetch failed...")
+        #     print(e)
 
         print("sleeping...")
         time.sleep(15)
