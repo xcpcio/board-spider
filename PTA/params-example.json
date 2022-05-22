@@ -13,6 +13,7 @@
     },
     "run_frozen_fallback": true,
     "frozen_start_timestamp": 14400,
+    "team_info_xls_path": "./data/team.xls",
     "data_dir": "./data",
     "board_url": "https://pintia.cn/api/problem-sets/1322401187006472192/rankings"
 }

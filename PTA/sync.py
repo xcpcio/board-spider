@@ -4,7 +4,6 @@ import urllib3
 import os
 import json
 import time
-from http.cookies import SimpleCookie
 import gevent.monkey
 gevent.monkey.patch_all(ssl=False)
 urllib3.disable_warnings()
@@ -39,6 +38,7 @@ def get_timestamp(dt):
 
 
 def get_cookies(raw_cookies: str):
+    from http.cookies import SimpleCookie
     cookie = SimpleCookie()
     cookie.load(raw_cookies)
 
@@ -56,10 +56,14 @@ data_dir = _params['data_dir']
 board_url = _params['board_url']
 
 run_frozen_fallback = False
-
-if "run_frozen_fallback" in _params.keys():
+if 'run_frozen_fallback' in _params.keys():
     run_frozen_fallback = _params['run_frozen_fallback']
     frozen_start_timestamp = _params['frozen_start_timestamp']
+
+team_info_xls_path = ''
+if 'team_info_xls_path' in _params.keys():
+    team_info_xls_path = _params['team_info_xls_path']
+
 
 headers["Referer"] = board_url
 
@@ -67,10 +71,8 @@ headers["Referer"] = board_url
 penalty = 20
 ac_score = 300
 
-team_data_xlsx_path = "./data/team.xls"
 
-
-def frozen_fallback(runs):
+def frozen_fallback(runs, frozen_start_timestamp):
     for r in runs:
         if r['timestamp'] >= frozen_start_timestamp:
             r['status'] = 'pending'
@@ -78,16 +80,22 @@ def frozen_fallback(runs):
     return runs
 
 
-def get_team_info():
+def read_xls(xls_file_path: str):
     import xlrd
-    data = xlrd.open_workbook(team_data_xlsx_path)
+    data = xlrd.open_workbook(xls_file_path)
     table = data.sheets()[0]
     nrows = table.nrows
-    team_info = {}
 
     for i in range(1, nrows):
-        row = table.row_values(i)
+        yield table.row_values(i)
+
+
+def get_team_info(team_info_xls_path: str):
+    team_info = {}
+
+    for row in read_xls(team_info_xls_path):
         team_id = row[0]
+
         team_info[team_id] = {}
         cur_team = team_info[team_id]
 
@@ -100,9 +108,6 @@ def get_team_info():
                 cur_team["members"].append(row[ix])
 
     return team_info
-
-
-team_info = get_team_info()
 
 
 def fetch():
@@ -135,6 +140,9 @@ def fetch():
 
 
 def team_output(res_list):
+    if len(team_info_xls_path) > 0:
+        team_info = get_team_info(team_info_xls_path)
+
     teams = {}
     for item in res_list:
         item = json.loads(item.text)
@@ -142,26 +150,27 @@ def team_output(res_list):
         for team in item['commonRankings']['commonRankings']:
             if 'studentUser' in team['user'].keys():
                 team_id = team['user']['studentUser']['studentNumber']
+                _team = {}
+                _team['team_id'] = team_id
 
                 # _name = team['user']['studentUser']['name']
                 # name = _name
                 # name = _name.split('_')[2]
                 # school = _name.split('_')[1]
                 # _id = _name.split('_')[0]
-
-                cur_team = team_info[team_id]
-                _team = {}
-                _team['team_id'] = team_id
-                _team['name'] = cur_team['team_name']
-                _team['organization'] = cur_team['organization']
-                _team['members'] = cur_team['members']
-
                 # if _id[0] == '*':
                 #     _team['unofficial'] = 1
                 # else:
                 #     _team['official'] = 1
                 # if _id[0] == 'F':
                 #     _team['girl'] = 1
+
+                cur_team = team_info[team_id]
+
+                if len(team_info_xls_path) > 0:
+                    _team['name'] = cur_team['team_name']
+                    _team['organization'] = cur_team['organization']
+                    _team['members'] = cur_team['members']
 
                 _team['official'] = 1
                 teams[team_id] = _team
@@ -176,7 +185,6 @@ def run_output(res_list):
     for item in res_list:
         item = json.loads(item.text)
         # problem_id = item['commonRankings']['labels']
-
         problem_id = item["commonRankings"]["labelByIndexTuple"]
 
         problem_ix = 0
@@ -240,7 +248,7 @@ def run_output(res_list):
                         run.append(run_.copy())
 
     if run_frozen_fallback:
-        run = frozen_fallback(run)
+        run = frozen_fallback(run, frozen_start_timestamp)
 
     if len(run) > 0:
         output(os.path.join(data_dir, 'run.json'), run)
