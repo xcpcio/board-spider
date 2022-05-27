@@ -6,3 +6,5 @@ beautifulsoup4
 lxml
 html5lib
 xlrd
+
+autopep8
