@@ -1,9 +1,9 @@
+import grequests
 import time
 import os
-from os import path
 import json
+import traceback
 import requests
-import grequests
 import gevent.monkey
 gevent.monkey.patch_all()
 
@@ -13,7 +13,7 @@ def json_output(data):
 
 
 def output(filename, data):
-    with open(path.join(data_dir, filename), 'w') as f:
+    with open(os.path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
 
@@ -188,9 +188,9 @@ def sync():
             team_output(res_list)
             run_output(res_list)
             print("fetch successfully")
-        except Exception as e:
+        except Exception:
             print("fetch failed...")
-            print(e)
+            print(traceback.format_exc())
 
         print("sleeping...")
         time.sleep(10)
