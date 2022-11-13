@@ -37,11 +37,10 @@ def get_now():
 
 
 def get_js_object(js_code, key):
-    text = js_code
-    text = text[text.find("=") + 1:]
-    text = text[:text.rfind(";")]
+    text = js_code.lstrip("var {} =".format(key)).rstrip(";\n ")
     text = "JSON.stringify(" + text + ")"
     text = execjs.eval(text)
+
     return json.loads(text)
 
 
@@ -91,13 +90,15 @@ def team_output(teams):
         new_item['members'] = members
 
         type = item['type'].split(" ")
+
         if 'unofficial' in type:
             new_item['unofficial'] = 1
         else:
-            new_item['official'] = 1
+            if "type1" in type:
+                new_item['official'] = 1
 
-        if 'girls' in type:
-            new_item['girl'] = 1
+        if "girls" in type:
+            new_item["girl"] = 1
 
     if len(team) > 0:
         output("team.json", team)
@@ -110,9 +111,6 @@ def run_output(runs):
     run = []
 
     for item in run_list:
-        if item[2] < 0:
-            continue
-
         new_item = {}
         new_item['team_id'] = item[0]
         new_item['problem_id'] = ord(item[1]) - ord('A')
