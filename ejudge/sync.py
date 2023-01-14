@@ -69,7 +69,7 @@ def fetch():
         params = (
             ('t', get_now()),
         )
-        response = requests.get(board_url, params=params)
+        response = requests.get(board_url, params=params, timeout=5)
         html = response.text
 
         return html
