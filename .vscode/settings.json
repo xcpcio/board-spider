@@ -16,6 +16,8 @@
         "KHTML",
         "mktime",
         "nrows",
+        "pyright",
+        "pytest",
         "Referer",
         "XCPCIO",
         "xlrd"

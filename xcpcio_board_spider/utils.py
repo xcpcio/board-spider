@@ -3,6 +3,10 @@ import time
 import os
 
 
+def hello_world():
+    return "hello world"
+
+
 def json_input(path):
     with open(path, 'r') as f:
         return json.load(f)
