@@ -6,8 +6,7 @@ COPY . /root/board-spider
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN cd board-spider \
-    && apt update \
+RUN apt update \
     && apt dist-upgrade -y \
     && apt install --no-install-recommends --no-install-suggests -y \
     locales \
