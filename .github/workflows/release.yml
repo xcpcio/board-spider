@@ -115,3 +115,5 @@ jobs:
           tags: |
             docker.io/xcpcio/board-spider-runtime:${{ env.DOCKER_TAG }}
             ghcr.io/xcpcio/board-spider-runtime:${{ env.DOCKER_TAG }}
+          build-args: |
+            XCPCIO_BOARD_SPIDER_VERSION=${{ env.DOCKER_TAG }}
