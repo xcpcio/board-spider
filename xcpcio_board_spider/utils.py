@@ -1,7 +1,8 @@
 import json
 import time
 import os
-from typing import List
+import config
+import typing
 
 
 def json_input(path: str) -> None:
@@ -78,25 +79,25 @@ def get_timestamp(dt):
     return int(timestamp)
 
 
-def generate_problem_label(problem_nums: int) -> List[str]:
+def generate_problem_id(problem_nums: int) -> typing.List[str]:
     return [chr(ord('A') + i) for i in range(problem_nums)]
 
 
-def generate_balloon_color(problem_nums: int):
-    default_balloon_color = [
-        {'background_color': 'rgba(189, 14, 14, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(255, 144, 228, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(255, 255, 255, 0.7)', 'color': '#000'},
-        {'background_color': 'rgba(38, 185, 60, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(239, 217, 9, 0.7)', 'color': '#000'},
-        {'background_color': 'rgba(243, 88, 20, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(12, 76, 138, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(156, 155, 155, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(4, 154, 115, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(159, 19, 236, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(42, 197, 202, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(142, 56, 54, 0.7)', 'color': '#fff'},
-        {'background_color': 'rgba(0, 0, 0, 0.7)', 'color': '#fff'},
+def generate_balloon_color(problem_nums: int) -> typing.List[config.Color]:
+    default_balloon_color_list = [
+        config.Color('rgba(189, 14, 14, 0.7)', '#fff'),
+        config.Color('rgba(255, 144, 228, 0.7)', '#fff'),
+        config.Color('rgba(255, 255, 255, 0.7)', '#000'),
+        config.Color('rgba(38, 185, 60, 0.7)', '#fff'),
+        config.Color('rgba(239, 217, 9, 0.7)', '#000'),
+        config.Color('rgba(243, 88, 20, 0.7)', '#fff'),
+        config.Color('rgba(12, 76, 138, 0.7)', '#fff'),
+        config.Color('rgba(156, 155, 155, 0.7)', '#fff'),
+        config.Color('rgba(4, 154, 115, 0.7)', '#fff'),
+        config.Color('rgba(159, 19, 236, 0.7)', '#fff'),
+        config.Color('rgba(42, 197, 202, 0.7)', '#fff'),
+        config.Color('rgba(142, 56, 54, 0.7)', '#fff'),
+        config.Color('rgba(0, 0, 0, 0.7)', '#fff'),
     ]
 
-    return default_balloon_color[:problem_nums]
+    return default_balloon_color_list[:problem_nums]
