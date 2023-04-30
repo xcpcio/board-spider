@@ -4,11 +4,7 @@ import os
 from typing import List
 
 
-def hello_world():
-    return "hello world"
-
-
-def json_input(path):
+def json_input(path: str) -> None:
     with open(path, 'r') as f:
         return json.load(f)
 
