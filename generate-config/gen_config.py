@@ -71,8 +71,6 @@ def generate_balloon_color(num):
     return default_balloon_color[:num]
 
 
-data_dir = "./data"
-
 problem_num = 13
 
 group = {
@@ -112,6 +110,7 @@ config = {
 }
 
 
+data_dir = "./data"
 mkdir(data_dir)
 output(os.path.join(data_dir, "config.json"), config)
 output(os.path.join(data_dir, "team.json"), {}, True)

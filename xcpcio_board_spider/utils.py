@@ -1,6 +1,7 @@
 import json
 import time
 import os
+from typing import List
 
 
 def hello_world():
@@ -27,12 +28,6 @@ def output(target_path, data, if_not_exists=False):
 def mkdir(_path):
     if not os.path.exists(_path):
         os.makedirs(_path)
-
-
-def get_timestamp(dt):
-    timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
-    timestamp = time.mktime(timeArray)
-    return int(timestamp)
 
 
 def url_to_base64(url):
@@ -79,3 +74,33 @@ def frozen_fallback(runs, frozen_start_timestamp):
             r['status'] = 'pending'
 
     return runs
+
+
+def get_timestamp(dt):
+    timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
+    timestamp = time.mktime(timeArray)
+    return int(timestamp)
+
+
+def generate_problem_label(problem_nums: int) -> List[str]:
+    return [chr(ord('A') + i) for i in range(problem_nums)]
+
+
+def generate_balloon_color(problem_nums: int):
+    default_balloon_color = [
+        {'background_color': 'rgba(189, 14, 14, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(255, 144, 228, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(255, 255, 255, 0.7)', 'color': '#000'},
+        {'background_color': 'rgba(38, 185, 60, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(239, 217, 9, 0.7)', 'color': '#000'},
+        {'background_color': 'rgba(243, 88, 20, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(12, 76, 138, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(156, 155, 155, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(4, 154, 115, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(159, 19, 236, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(42, 197, 202, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(142, 56, 54, 0.7)', 'color': '#fff'},
+        {'background_color': 'rgba(0, 0, 0, 0.7)', 'color': '#fff'},
+    ]
+
+    return default_balloon_color[:problem_nums]
