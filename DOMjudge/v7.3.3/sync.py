@@ -1,6 +1,5 @@
 import requests
 import json
-from os import path
 import time
 import bs4
 import os
@@ -35,7 +34,7 @@ if "image_dir" in _params.keys():
 
 
 def output(filename, data):
-    with open(path.join(data_dir, filename), 'w') as f:
+    with open(os.path.join(data_dir, filename), 'w') as f:
         f.write(json_output(data))
 
 
@@ -57,7 +56,7 @@ def get_incorrect_timestamp():
 
 
 def mkdir(_path):
-    if not path.exists(_path):
+    if not os.path.exists(_path):
         os.makedirs(_path)
 
 
@@ -93,7 +92,7 @@ def init_logging():
 
 def urllib_download(img_url, dist):
     from urllib.request import urlretrieve
-    mkdir(path.split(dist)[0])
+    mkdir(os.path.split(dist)[0])
     urlretrieve(img_url, dist)
 
 
@@ -127,9 +126,9 @@ def image_download(html):
     for img in imgs:
         srcs.add(img['src'])
     for src in srcs:
-        img_url = path.join(image_download_host, src)
-        dist = path.join(image_dir, src)
-        if not path.isfile(dist):
+        img_url = os.path.join(image_download_host, src)
+        dist = os.path.join(image_dir, src)
+        if not os.path.isfile(dist):
             print("downloading... " + src)
             urllib_download(img_url, dist)
             print(src + " downloaded.")
