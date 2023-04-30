@@ -1,8 +1,9 @@
 import json
 import time
 import os
-import config
 import typing
+
+from . import config
 
 
 def json_input(path: str) -> None:
