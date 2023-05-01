@@ -28,6 +28,8 @@ class Submission:
         if self.submission_id is not None:
             json_string["submission_id"] = self.submission_id
 
+        return json_string
+
 
 ISubmissions = typing.List[Submission]
 
