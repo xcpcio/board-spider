@@ -75,3 +75,7 @@ def get_timestamp(dt):
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
     timestamp = time.mktime(timeArray)
     return int(timestamp)
+
+
+def get_now():
+    return int(time.time())
