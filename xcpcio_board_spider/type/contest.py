@@ -1,4 +1,6 @@
 import typing
+import json
+
 from .type import *
 
 
@@ -32,6 +34,8 @@ class Contest:
 
         if logo is not None:
             self.logo = Image(**logo)
+        else:
+            self.logo = None
 
     def fill_problem_id(self):
         self.problem_id = [chr(ord('A') + i)
@@ -55,3 +59,23 @@ class Contest:
         ]
 
         self.balloon_color = default_balloon_color_list[:self.problem_quantity]
+
+    @property
+    def __json__(self):
+        json_obj = {}
+
+        json_obj["contest_name"] = self.contest_name
+        json_obj["start_time"] = self.start_time
+        json_obj["end_time"] = self.end_time
+        json_obj["frozen_time"] = self.frozen_time
+        json_obj["penalty"] = self.penalty
+        json_obj["problem_quantity"] = self.problem_quantity
+        json_obj["problem_id"] = self.problem_id
+        json_obj["group"] = self.group
+        json_obj["organization"] = self.organization
+        json_obj["status_time_display"] = self.status_time_display
+        json_obj["medal"] = self.medal
+        json_obj["balloon_color"] = self.balloon_color
+        json_obj["logo"] = self.logo
+
+        return json.dumps(json_obj)

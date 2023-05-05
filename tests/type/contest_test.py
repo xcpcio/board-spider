@@ -24,3 +24,11 @@ def test_fill_balloon_color():
     assert len(c.balloon_color) == c.problem_quantity
     assert c.balloon_color[0].color == "#fff"
     assert c.balloon_color[0].background_color == "rgba(189, 14, 14, 0.7)"
+
+
+def test_contest_json(snapshot):
+    c = board.Contest()
+
+    c.contest_name = "test_name"
+
+    snapshot.assert_match(c.__json__, "test_contest")

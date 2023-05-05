@@ -28,25 +28,25 @@ class Team:
 
     @property
     def __json__(self):
-        json_string = {}
+        json_obj = {}
 
-        json_string["team_id"] = self.team_id
-        json_string["name"] = self.name
-        json_string["organization"] = self.organization
+        json_obj["team_id"] = self.team_id
+        json_obj["name"] = self.name
+        json_obj["organization"] = self.organization
 
         if self.members is not None:
-            json_string["members"] = self.members
+            json_obj["members"] = self.members
         if self.coach is not None:
-            json_string["coach"] = self.coach
+            json_obj["coach"] = self.coach
 
         if self.official is not None:
-            json_string["official"] = self.official
+            json_obj["official"] = self.official
         if self.unofficial is not None:
-            json_string["unofficial"] = self.unofficial
+            json_obj["unofficial"] = self.unofficial
         if self.girl is not None:
-            json_string["girl"] = self.girl
+            json_obj["girl"] = self.girl
 
-        return json_string
+        return json_obj
 
 
 ITeams = typing.Dict[str, Team]

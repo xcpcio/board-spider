@@ -1,7 +1,4 @@
 import os
-import json
-
-import pytest
 
 from xcpcio_board_spider.spider.domjudge.v2 import DOMjudge
 

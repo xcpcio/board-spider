@@ -18,17 +18,17 @@ class Submission:
 
     @property
     def __json__(self):
-        json_string = {}
+        json_obj = {}
 
-        json_string["team_id"] = self.team_id
-        json_string["problem_id"] = self.problem_id
-        json_string["timestamp"] = self.timestamp
-        json_string["status"] = self.status
+        json_obj["team_id"] = self.team_id
+        json_obj["problem_id"] = self.problem_id
+        json_obj["timestamp"] = self.timestamp
+        json_obj["status"] = self.status
 
         if self.submission_id is not None:
-            json_string["submission_id"] = self.submission_id
+            json_obj["submission_id"] = self.submission_id
 
-        return json_string
+        return json_obj
 
 
 ISubmissions = typing.List[Submission]
