@@ -41,6 +41,8 @@ class Contest:
         self.problem_id = [chr(ord('A') + i)
                            for i in range(self.problem_quantity)]
 
+        return self
+
     def fill_balloon_color(self):
         default_balloon_color_list = [
             Color(background_color='rgba(189, 14, 14, 0.7)', color='#fff'),
@@ -59,6 +61,8 @@ class Contest:
         ]
 
         self.balloon_color = default_balloon_color_list[:self.problem_quantity]
+
+        return self
 
     @property
     def __json__(self):
