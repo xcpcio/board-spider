@@ -72,10 +72,14 @@ def frozen_fallback(runs, frozen_start_timestamp):
 
 
 def get_timestamp(dt):
+    if str(dt).isdigit():
+        return dt
+
     timeArray = time.strptime(dt, "%Y-%m-%d %H:%M:%S")
     timestamp = time.mktime(timeArray)
+
     return int(timestamp)
 
 
-def get_now():
+def get_now_timestamp_second():
     return int(time.time())

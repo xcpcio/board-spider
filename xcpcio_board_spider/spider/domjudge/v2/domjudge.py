@@ -30,12 +30,12 @@ class DOMjudge():
         return team.extra[DOMjudge.IS_DEFAULT_OBSERVERS_TEAM] == True
 
     def get_incorrect_timestamp(self) -> int:
-        return min(utils.get_now(), utils.get_timestamp(self.end_time)) - utils.get_timestamp(self.start_time)
+        return min(utils.get_now_timestamp_second(), utils.get_timestamp(self.end_time)) - utils.get_timestamp(self.start_time)
 
     def fetch(self):
         if self.fetch_url is not None:
             params = (
-                ('t', utils.get_now())
+                ('t', utils.get_now_timestamp_second())
             )
             response = requests.get(self.fetch_url, params=params, timeout=5)
             html = response.text
