@@ -79,8 +79,12 @@ class Contest:
         obj["organization"] = self.organization
         obj["status_time_display"] = self.status_time_display
         obj["medal"] = self.medal
-        obj["balloon_color"] = self.balloon_color
-        obj["logo"] = self.logo
+
+        if self.balloon_color is not None:
+            obj["balloon_color"] = [item.__dict__ for item in self.balloon_color]
+
+        if self.logo is not None:
+            obj["logo"] = self.logo.__dict__
 
         return obj
 
