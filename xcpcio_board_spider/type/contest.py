@@ -65,21 +65,25 @@ class Contest:
         return self
 
     @property
+    def __dict__(self):
+        obj = {}
+
+        obj["contest_name"] = self.contest_name
+        obj["start_time"] = self.start_time
+        obj["end_time"] = self.end_time
+        obj["frozen_time"] = self.frozen_time
+        obj["penalty"] = self.penalty
+        obj["problem_quantity"] = self.problem_quantity
+        obj["problem_id"] = self.problem_id
+        obj["group"] = self.group
+        obj["organization"] = self.organization
+        obj["status_time_display"] = self.status_time_display
+        obj["medal"] = self.medal
+        obj["balloon_color"] = self.balloon_color
+        obj["logo"] = self.logo
+
+        return obj
+
+    @property
     def __json__(self):
-        json_obj = {}
-
-        json_obj["contest_name"] = self.contest_name
-        json_obj["start_time"] = self.start_time
-        json_obj["end_time"] = self.end_time
-        json_obj["frozen_time"] = self.frozen_time
-        json_obj["penalty"] = self.penalty
-        json_obj["problem_quantity"] = self.problem_quantity
-        json_obj["problem_id"] = self.problem_id
-        json_obj["group"] = self.group
-        json_obj["organization"] = self.organization
-        json_obj["status_time_display"] = self.status_time_display
-        json_obj["medal"] = self.medal
-        json_obj["balloon_color"] = self.balloon_color
-        json_obj["logo"] = self.logo
-
-        return json.dumps(json_obj)
+        return json.dumps(self.__dict__)
