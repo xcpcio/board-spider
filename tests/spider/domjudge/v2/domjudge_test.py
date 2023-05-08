@@ -20,5 +20,5 @@ def test_spider_domjudge_v2(snapshot):
     assert len(d.teams) == 197
     assert len(d.runs) == 2759
 
-    snapshot.assert_match(d.teams.__json__, "teams")
-    snapshot.assert_match(d.runs.__json__, "runs")
+    snapshot.assert_match(d.teams.get_json, "teams")
+    snapshot.assert_match(d.runs.get_json, "runs")

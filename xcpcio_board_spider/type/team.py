@@ -1,6 +1,8 @@
 import typing
 import json
 
+from . import constants
+
 
 class Team:
     def __init__(self,
@@ -27,26 +29,30 @@ class Team:
         self.extra = extra
 
     @property
-    def __json__(self):
-        json_obj = {}
+    def get_dict(self):
+        obj = {}
 
-        json_obj["team_id"] = self.team_id
-        json_obj["name"] = self.name
-        json_obj["organization"] = self.organization
+        obj["team_id"] = self.team_id
+        obj["name"] = self.name
+        obj["organization"] = self.organization
 
         if self.members is not None:
-            json_obj["members"] = self.members
+            obj["members"] = self.members
         if self.coach is not None:
-            json_obj["coach"] = self.coach
+            obj["coach"] = self.coach
 
         if self.official is not None:
-            json_obj["official"] = self.official
+            obj[constants.TEAM_TYPE_OFFICIAL] = self.official
         if self.unofficial is not None:
-            json_obj["unofficial"] = self.unofficial
+            obj[constants.TEAM_TYPE_UNOFFICIAL] = self.unofficial
         if self.girl is not None:
-            json_obj["girl"] = self.girl
+            obj[constants.TEAM_TYPE_GIRL] = self.girl
 
-        return json_obj
+        return obj
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)
 
 
 ITeams = typing.Dict[str, Team]
@@ -54,8 +60,17 @@ ITeams = typing.Dict[str, Team]
 
 class Teams(ITeams):
     def __init__(self):
-        pass
+        return
 
     @property
-    def __json__(self):
-        return json.dumps(self, default=lambda o: o.__json__)
+    def get_dict(self):
+        obj = {}
+
+        for k in self.keys():
+            obj[k] = self[k].get_dict
+
+        return obj
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)

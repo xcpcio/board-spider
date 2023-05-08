@@ -17,18 +17,22 @@ class Submission:
         self.submission_id = submission_id
 
     @property
-    def __json__(self):
-        json_obj = {}
+    def get_dict(self):
+        obj = {}
 
-        json_obj["team_id"] = self.team_id
-        json_obj["problem_id"] = self.problem_id
-        json_obj["timestamp"] = self.timestamp
-        json_obj["status"] = self.status
+        obj["team_id"] = self.team_id
+        obj["problem_id"] = self.problem_id
+        obj["timestamp"] = self.timestamp
+        obj["status"] = self.status
 
         if self.submission_id is not None:
-            json_obj["submission_id"] = self.submission_id
+            obj["submission_id"] = self.submission_id
 
-        return json_obj
+        return obj
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)
 
 
 ISubmissions = typing.List[Submission]
@@ -36,8 +40,12 @@ ISubmissions = typing.List[Submission]
 
 class Submissions(ISubmissions):
     def __init__(self):
-        pass
+        return
 
     @property
-    def __json__(self):
-        return json.dumps(self, default=lambda o: o.__json__)
+    def get_dict(self):
+        return [item.get_dict for item in self]
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)
