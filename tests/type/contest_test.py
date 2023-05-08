@@ -31,4 +31,4 @@ def test_contest_json(snapshot):
 
     c.contest_name = "test_name"
 
-    snapshot.assert_match(c.__json__, "test_contest")
+    snapshot.assert_match(c.get_json, "test_contest")

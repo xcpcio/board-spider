@@ -17,7 +17,7 @@ class Contest:
                  organization: str = "",
                  status_time_display: typing.Any = None,
                  medal: typing.Any = {},
-                 balloon_color: typing.List[Color] = [],
+                 balloon_color: typing.List[Color] = None,
                  logo: Image = None):
         self.contest_name = contest_name
         self.start_time = start_time
@@ -30,12 +30,23 @@ class Contest:
         self.organization = organization
         self.status_time_display = status_time_display
         self.medal = medal
-        self.balloon_color = [Color(**item) for item in balloon_color]
+
+        if balloon_color is not None:
+            self.balloon_color = [Color(**item) for item in balloon_color]
+        else:
+            self.balloon_color = None
 
         if logo is not None:
             self.logo = Image(**logo)
         else:
             self.logo = None
+
+    def append_balloon_color(self, Color):
+        if self.balloon_color is None:
+            self.balloon_color = []
+
+        self.balloon_color.append(Color)
+        return self
 
     def fill_problem_id(self):
         self.problem_id = [chr(ord('A') + i)
@@ -65,7 +76,7 @@ class Contest:
         return self
 
     @property
-    def __dict__(self):
+    def get_dict(self):
         obj = {}
 
         obj["contest_name"] = self.contest_name
@@ -81,13 +92,13 @@ class Contest:
         obj["medal"] = self.medal
 
         if self.balloon_color is not None:
-            obj["balloon_color"] = [item.__dict__ for item in self.balloon_color]
+            obj["balloon_color"] = [item.get_dict for item in self.balloon_color]
 
         if self.logo is not None:
-            obj["logo"] = self.logo.__dict__
+            obj["logo"] = self.logo.get_dict
 
         return obj
 
     @property
-    def __json__(self):
-        return json.dumps(self.__dict__)
+    def get_json(self):
+        return json.dumps(self.get_dict)

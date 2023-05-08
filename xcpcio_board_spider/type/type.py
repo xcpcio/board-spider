@@ -7,7 +7,7 @@ class Image:
         self.base64 = base64
 
     @property
-    def __dict__(self):
+    def get_dict(self):
         obj = {}
 
         obj["url"] = self.url
@@ -16,8 +16,8 @@ class Image:
         return obj
 
     @property
-    def __json__(self):
-        return json.dumps(self.__dict__)
+    def get_json(self):
+        return json.dumps(self.get_dict)
 
 
 class Color:
@@ -26,7 +26,7 @@ class Color:
         self.background_color = background_color
 
     @property
-    def __dict__(self):
+    def get_dict(self):
         obj = {}
 
         obj["color"] = self.color
@@ -35,5 +35,5 @@ class Color:
         return obj
 
     @property
-    def __json__(self):
-        return json.dumps(self.__dict__)
+    def get_json(self):
+        return json.dumps(self.get_dict)
