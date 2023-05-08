@@ -9,7 +9,7 @@ current_dir_path = os.path.dirname(current_file_path)
 def test_spider_domjudge_v2(snapshot):
     d = DOMjudge()
 
-    d.fetch_file_path = os.path.join(
+    d.fetch_uri = os.path.join(
         current_dir_path, "test_data", "Scoreboard HBCPC_2023 - DOMjudge.html")
 
     d.start_time = "2023-04-30 10:00:00"

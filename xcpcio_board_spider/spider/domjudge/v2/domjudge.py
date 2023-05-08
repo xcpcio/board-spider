@@ -1,6 +1,7 @@
 import requests
 import bs4
 import copy
+import os
 
 from xcpcio_board_spider.core import utils
 from xcpcio_board_spider.type import Team, Teams, Submission, Submissions, constants
@@ -12,12 +13,10 @@ class DOMjudge():
     def __init__(self,
                  start_time: int = None,
                  end_time: int = None,
-                 fetch_url: str = None,
-                 fetch_file_path: str = None):
+                 fetch_uri: str = None,):
         self.start_time = start_time
         self.end_time = end_time
-        self.fetch_url = fetch_url
-        self.fetch_file_path = fetch_file_path
+        self.fetch_uri = fetch_uri
 
         self.html = ""
         self.soup = None
@@ -33,19 +32,18 @@ class DOMjudge():
         return min(utils.get_now_timestamp_second(), utils.get_timestamp(self.end_time)) - utils.get_timestamp(self.start_time)
 
     def fetch(self):
-        if self.fetch_url is not None:
+        if os.path.exists(self.fetch_uri):
+            with open(self.fetch_uri, 'r') as f:
+                self.html = f.read()
+        else:
             params = (
                 ('t', utils.get_now_timestamp_second())
             )
-            response = requests.get(self.fetch_url, params=params, timeout=5)
+            response = requests.get(self.fetch_uri, params=params, timeout=5)
             html = response.text
 
             # html = response.text.encode("latin1").decode(charset)
             self.html = html
-
-        if self.fetch_file_path is not None:
-            with open(self.fetch_file_path, 'r') as f:
-                self.html = f.read()
 
         self.soup = bs4.BeautifulSoup(self.html, 'html5lib')
 
