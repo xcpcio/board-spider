@@ -13,7 +13,7 @@ class DOMjudge():
     def __init__(self,
                  start_time: int = None,
                  end_time: int = None,
-                 fetch_uri: str = None,):
+                 fetch_uri: str = None):
         self.start_time = start_time
         self.end_time = end_time
         self.fetch_uri = fetch_uri
