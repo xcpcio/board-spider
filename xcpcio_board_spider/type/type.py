@@ -2,7 +2,7 @@ import json
 
 
 class Image:
-    def __init__(self, url: str, base64: str):
+    def __init__(self, url: str = None, base64: str = None):
         self.url = url
         self.base64 = base64
 
@@ -10,8 +10,11 @@ class Image:
     def get_dict(self):
         obj = {}
 
-        obj["url"] = self.url
-        obj["base64"] = self.base64
+        if self.url is not None:
+            obj['url'] = self.url
+
+        if self.base64 is not None:
+            obj['base64'] = self.base64
 
         return obj
 
