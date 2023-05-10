@@ -10,7 +10,7 @@ def test_spider_domjudge_v2(snapshot):
     d = DOMjudge()
 
     d.fetch_uri = os.path.join(
-        current_dir_path, "test_data", "Scoreboard HBCPC_2023 - DOMjudge.html")
+        current_dir_path, "test_data", "2023_hbcpc", "Scoreboard HBCPC_2023 - DOMjudge.html")
 
     d.start_time = "2023-04-30 10:00:00"
     d.end_time = "2023-04-30 15:00:00"
