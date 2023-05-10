@@ -26,7 +26,7 @@ class DOMjudge():
 
     @staticmethod
     def is_default_observers_team(team: Team) -> bool:
-        return team.extra[DOMjudge.IS_DEFAULT_OBSERVERS_TEAM] == True
+        return DOMjudge.IS_DEFAULT_OBSERVERS_TEAM in team.extra.keys() and team.extra[DOMjudge.IS_DEFAULT_OBSERVERS_TEAM] == True
 
     def get_incorrect_timestamp(self) -> int:
         return min(utils.get_now_timestamp_second(), utils.get_timestamp(self.end_time)) - utils.get_timestamp(self.start_time)
@@ -76,6 +76,8 @@ class DOMjudge():
             team.team_id = team_id
             team.name = name.strip()
             team.organization = organization.strip()
+
+            team.official = True
 
             # default Observers color
             if len(tr.select('.cl_ffcc33')) > 0:
@@ -147,5 +149,13 @@ class DOMjudge():
                     submission.timestamp = pending_timestamp
                     self.runs += [copy.deepcopy(submission)
                                   for _ in range(pending_cnt)]
+
+        return self
+
+    def handle_default_observers_team(self):
+        for team in self.teams.values():
+            if DOMjudge.is_default_observers_team(team):
+                team.official = False
+                team.unofficial = True
 
         return self

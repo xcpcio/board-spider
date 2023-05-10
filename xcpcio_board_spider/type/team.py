@@ -14,7 +14,7 @@ class Team:
                  official: bool = False,
                  unofficial: bool = False,
                  girl: bool = False,
-                 extra: typing.Dict[str, typing.Any] = {}):
+                 extra: typing.Dict[str, typing.Any] = None):
         self.team_id = team_id
         self.name = name
         self.organization = organization
@@ -26,7 +26,10 @@ class Team:
         self.unofficial = unofficial
         self.girl = girl
 
-        self.extra = extra
+        if extra is None:
+            self.extra = {}
+        else:
+            self.extra = extra
 
     @property
     def get_dict(self):

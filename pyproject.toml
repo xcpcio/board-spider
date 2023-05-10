@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xcpcio-board-spider"
-version = "0.0.18"
+version = "0.0.19"
 description = "XCPCIO Board Spider"
 authors = ["Dup4 <lyuzhi.pan@gmail.com>"]
 license = "MIT"
