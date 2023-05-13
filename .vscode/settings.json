@@ -8,6 +8,7 @@
     "python.languageServer": "Pylance",
     "cSpell.words": [
         "buildx",
+        "ccpc",
         "DOCKERHUB",
         "domjudge",
         "execjs",
