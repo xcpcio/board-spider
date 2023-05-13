@@ -22,6 +22,11 @@ def output(target_path, data, if_not_exists=False):
         f.write(json_output(data))
 
 
+def ensure_makedirs(_path):
+    if not os.path.exists(_path):
+        os.makedirs(_path)
+
+
 def url_to_base64(url):
     import base64
     import requests as req
