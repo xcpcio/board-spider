@@ -1,16 +1,17 @@
 import typing
 import requests
 import json
+import os
 
 from xcpcio_board_spider import Contest, Team, Teams, Submission, Submissions, utils, constants
 
 
 class CSG_CPC():
-    def __init__(self, contest: Contest, team_urls: typing.List[str], run_urls: typing.List[str]):
+    def __init__(self, contest: Contest, team_uris: typing.List[str], run_uris: typing.List[str]):
         self.contest = contest
 
-        self.team_urls = team_urls
-        self.run_urls = run_urls
+        self.team_uris = team_uris
+        self.run_uris = run_uris
 
         self.raw_team_data = []
         self.raw_run_data = []
@@ -18,23 +19,29 @@ class CSG_CPC():
         self.teams = Teams()
         self.runs = Submissions()
 
+    def fetch_resp_obj(self, uri: str):
+        if os.path.exists(uri):
+            with open(uri, 'r') as f:
+                resp_obj = json.loads(f.read())
+        else:
+            resp = requests.get(uri, timeout=10)
+            resp_obj = json.loads(resp.text)
+
+        if int(resp_obj["code"]) != 200:
+            raise RuntimeError("Invalid response")
+
+        return resp_obj
+
     def fetch(self):
         raw_team_data = []
         raw_run_data = []
 
-        for team_url in self.team_urls:
-            resp = requests.get(team_url)
-            resp_obj = json.loads(resp.text)
-
+        for team_uri in self.team_uris:
+            resp_obj = self.fetch_resp_obj(team_uri)
             raw_team_data.extend(resp_obj["data"])
 
-        for run_url in self.run_urls:
-            resp = requests.get(run_url)
-            resp_obj = json.loads(resp.text)
-
-            if int(resp_obj["code"]) != 200:
-                pass
-
+        for run_uri in self.run_uris:
+            resp_obj = self.fetch_resp_obj(run_uri)
             raw_run_data.extend(resp_obj["data"])
 
         self.raw_team_data = raw_team_data
@@ -66,14 +73,14 @@ class CSG_CPC():
             team.coach = coach
 
             if kind == 0:
-                team.official = 1
+                team.official = True
 
             if kind == 1:
-                team.official = 1
-                team.girl = 1
+                team.official = True
+                team.girl = True
 
             if kind == 2:
-                team.unofficial = 1
+                team.unofficial = True
 
             teams[team_id] = team
 
@@ -85,6 +92,7 @@ class CSG_CPC():
         runs = Submissions()
 
         """
+
         [
             6,
             1001,
@@ -100,20 +108,6 @@ problem_id
 user_id
 result
 in_date
-
-        4    =>    'AC',
-        5    =>    'PE',
-        6    =>    'WA',
-        7    =>    'TLE',
-        8    =>    'MLE',
-        9    =>    'OLE',
-        10    =>    'RE',
-        11    =>    'CE',
-        13    =>    'Tested',
-        0    =>    'PD',
-        1    =>    'PR',
-        2    =>    'CI',
-        3    =>    'RJ',
 
         4    =>   Accepted'],
         5    =>    'Presentation Error'],
@@ -138,11 +132,12 @@ in_date
             run = Submission()
 
             submission_id = str(raw_run[0])
-            problem_id = int(raw_run[2]) - 1004
+            problem_id = int(raw_run[2])
             team_id = str(raw_run[3])
             result = int(raw_run[4])
             in_date = str(raw_run[5]).replace("T", " ")
-            timestamp = utils.get_timestamp(in_date) - self.contest.start_time
+            timestamp = utils.get_timestamp_second(
+                in_date) - self.contest.start_time
 
             run.submission_id = str(submission_id)
             run.team_id = str(team_id)
