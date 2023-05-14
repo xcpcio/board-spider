@@ -4,18 +4,17 @@ import copy
 import os
 
 from xcpcio_board_spider.core import utils
-from xcpcio_board_spider.type import Team, Teams, Submission, Submissions, constants
+from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
 
 
 class DOMjudge():
-    IS_DEFAULT_OBSERVERS_TEAM = "is_default_observers_team"
+    CONSTANT_IS_DEFAULT_OBSERVERS_TEAM = "is_default_observers_team"
+    CONSTANT_CLASS_ATTR = "class_attr"
 
     def __init__(self,
-                 start_time: int = None,
-                 end_time: int = None,
+                 contest: Contest = None,
                  fetch_uri: str = None):
-        self.start_time = start_time
-        self.end_time = end_time
+        self.contest = contest
         self.fetch_uri = fetch_uri
 
         self.html = ""
@@ -26,19 +25,23 @@ class DOMjudge():
 
     @staticmethod
     def is_default_observers_team(team: Team) -> bool:
-        return DOMjudge.IS_DEFAULT_OBSERVERS_TEAM in team.extra.keys() and team.extra[DOMjudge.IS_DEFAULT_OBSERVERS_TEAM] == True
+        return DOMjudge.CONSTANT_IS_DEFAULT_OBSERVERS_TEAM in team.extra.keys() and team.extra[DOMjudge.CONSTANT_IS_DEFAULT_OBSERVERS_TEAM] == True
+
+    @staticmethod
+    def get_team_class_attr(team: Team):
+        return team.extra[DOMjudge.CONSTANT_CLASS_ATTR]
 
     def get_incorrect_timestamp(self) -> int:
-        return min(utils.get_now_timestamp_second(), utils.get_timestamp(self.end_time)) - utils.get_timestamp(self.start_time)
+        return min(utils.get_now_timestamp_second(), utils.get_timestamp_second(self.contest.end_time)) - utils.get_timestamp_second(self.contest.start_time)
 
     def fetch(self):
         if os.path.exists(self.fetch_uri):
             with open(self.fetch_uri, 'r') as f:
                 self.html = f.read()
         else:
-            params = (
-                ('t', utils.get_now_timestamp_second())
-            )
+            params = {
+                '__timestamp__': utils.get_now_timestamp_second()
+            }
             response = requests.get(self.fetch_uri, params=params, timeout=5)
             html = response.text
 
@@ -79,9 +82,12 @@ class DOMjudge():
 
             team.official = True
 
+            team.extra[DOMjudge.CONSTANT_CLASS_ATTR] = tr.select(".scoretn")[
+                0].attrs["class"]
+
             # default Observers color
-            if len(tr.select('.cl_ffcc33')) > 0:
-                team.extra[DOMjudge.IS_DEFAULT_OBSERVERS_TEAM] = True
+            if "cl_ffcc33" in team.extra[DOMjudge.CONSTANT_CLASS_ATTR]:
+                team.extra[DOMjudge.CONSTANT_IS_DEFAULT_OBSERVERS_TEAM] = True
 
             self.teams[team_id] = team
 

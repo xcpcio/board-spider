@@ -1,5 +1,6 @@
 import os
 
+from xcpcio_board_spider import Contest, utils
 from xcpcio_board_spider.spider.domjudge.v2 import DOMjudge
 
 current_file_path = os.path.abspath(__file__)
@@ -9,13 +10,14 @@ current_dir_path = os.path.dirname(current_file_path)
 def test_spider_domjudge_v2_2023_hbcpc(snapshot):
     test_prefix = "2023_hbcpc"
 
-    d = DOMjudge()
+    c = Contest()
+    c.start_time = utils.get_timestamp_second("2023-04-30 10:00:00")
+    c.end_time = utils.get_timestamp_second("2023-04-30 15:00:00")
 
+    d = DOMjudge()
+    d.contest = c
     d.fetch_uri = os.path.join(
         current_dir_path, "test_data", test_prefix, "Scoreboard HBCPC_2023 - DOMjudge.html")
-
-    d.start_time = "2023-04-30 10:00:00"
-    d.end_time = "2023-04-30 15:00:00"
 
     d.fetch().parse_teams().parse_runs()
 
@@ -29,13 +31,14 @@ def test_spider_domjudge_v2_2023_hbcpc(snapshot):
 def test_spider_domjudge_v2_47th_ec_final(snapshot):
     test_prefix = "47th_ec_final"
 
-    d = DOMjudge()
+    c = Contest()
+    c.start_time = utils.get_timestamp_second("2023-03-25 10:00:00")
+    c.end_time = utils.get_timestamp_second("2023-03-25 15:00:00")
 
+    d = DOMjudge()
+    d.contest = c
     d.fetch_uri = os.path.join(
         current_dir_path, "test_data", test_prefix, "Scoreboard EC-Final - DOMjudge.html")
-
-    d.start_time = "2023-03-25 10:00:00"
-    d.end_time = "2023-03-25 15:00:00"
 
     d.fetch().parse_teams().handle_default_observers_team().parse_runs()
 

@@ -73,7 +73,7 @@ def frozen_fallback(contest: Contest, submissions: Submissions):
     return submissions
 
 
-def get_timestamp(dt):
+def get_timestamp_second(dt):
     if str(dt).isdigit():
         return dt
 

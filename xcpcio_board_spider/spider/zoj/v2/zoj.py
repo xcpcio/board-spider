@@ -43,9 +43,9 @@ class ZOJ:
                 with open(fetch_uri, "r") as f:
                     data[key] = self.get_js_object(f.read(), key)
             else:
-                params = (
-                    ('t', utils.get_now_timestamp_second()),
-                )
+                params = {
+                    '__timestamp__': utils.get_now_timestamp_second(),
+                }
                 response = requests.get(fetch_uri, params=params)
 
                 data[key] = self.get_js_object(response.text, key)

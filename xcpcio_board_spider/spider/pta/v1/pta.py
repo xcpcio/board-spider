@@ -44,10 +44,10 @@ class PTA:
         }
 
     def fetch(self):
-        params = (
-            ('page', '0'),
-            ('limit', '50'),
-        )
+        params = {
+            'page': '0',
+            'limit': '50',
+        }
 
         response = requests.get(self.fetch_uri, headers=self.headers,
                                 params=params, cookies=self.cookies)
