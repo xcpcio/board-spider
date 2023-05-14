@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xcpcio-board-spider"
-version = "0.0.21"
+version = "0.0.22"
 description = "XCPCIO Board Spider"
 authors = ["Dup4 <lyuzhi.pan@gmail.com>"]
 license = "MIT"
@@ -33,7 +33,13 @@ flake8 = "^6.0.0"
 pyright = "^1.1.305"
 autopep8 = "^2.0.2"
 pytest-snapshot = "^0.9.0"
+poetry-bumpversion = "^0.3.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry_bumpversion.replacements]]
+files = ["xcpcio_board_spider/__init__.py"]
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
