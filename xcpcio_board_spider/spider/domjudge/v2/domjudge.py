@@ -42,10 +42,25 @@ class DOMjudge():
             params = {
                 '__timestamp__': utils.get_now_timestamp_second()
             }
-            response = requests.get(self.fetch_uri, params=params, timeout=5)
-            html = response.text
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+            }
 
-            # html = response.text.encode("latin1").decode(charset)
+            resp = requests.get(self.fetch_uri, params=params,
+                                headers=headers, timeout=5)
+
+            if resp.status_code == 200:
+                content_type = resp.headers.get("Content-Type")
+
+                if "charset" in content_type:
+                    charset = content_type.split("charset=")[1]
+                    html = resp.content.decode(charset)
+                else:
+                    html = resp.content.decode()
+            else:
+                raise RuntimeError(
+                    "fetch failed. [status_code=%s]" % resp.status_code)
+
             self.html = html
 
         self.soup = bs4.BeautifulSoup(self.html, 'html5lib')
