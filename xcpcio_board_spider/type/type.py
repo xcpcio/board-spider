@@ -1,4 +1,5 @@
 import json
+import typing
 
 
 class Image:
@@ -18,9 +19,19 @@ class Image:
 
         return obj
 
+    def from_dict(self, d: typing.Any):
+        if "url" in d.keys():
+            self.url = d["url"]
+
+        if "base64" in d.keys():
+            self.base64 = d["base64"]
+
     @property
     def get_json(self):
         return json.dumps(self.get_dict)
+
+    def from_json(self, json_string: str):
+        self.from_dict(json.loads(json_string))
 
 
 class Color:
@@ -37,6 +48,16 @@ class Color:
 
         return obj
 
+    def from_dict(self, d: typing.Any):
+        if "color" in d.keys():
+            self.color = d["color"]
+
+        if "background_color" in d.keys():
+            self.background_color = d["background_color"]
+
     @property
     def get_json(self):
         return json.dumps(self.get_dict)
+
+    def from_json(self, json_string: str):
+        self.from_dict(json.loads(json_string))
