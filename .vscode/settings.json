@@ -14,6 +14,7 @@
         "execjs",
         "gevent",
         "grequests",
+        "gxcpc",
         "icpc",
         "KHTML",
         "mktime",
