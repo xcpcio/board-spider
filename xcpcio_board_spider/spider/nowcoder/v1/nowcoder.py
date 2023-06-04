@@ -22,7 +22,7 @@ class NowCoder:
         self.submissions = Submissions()
 
     def get_time_diff(self, l, r):
-        return int((r - l) // 1000)
+        return int(r - l)
 
     def fetch(self):
         total = 0
@@ -117,12 +117,12 @@ class NowCoder:
                     if problem['accepted']:
                         status = constants.RESULT_CORRECT
                         timestamp = self.get_time_diff(
-                            self.contest.start_time, int(problem['acceptedTime']))
+                            self.contest.start_time, int(problem['acceptedTime']) // 1000)
 
                     for j in range(0, problem['failedCount']):
                         run = Submission()
                         run.team_id = team_id
-                        run.timestamp = timestamp
+                        run.timestamp = max(0, timestamp - 1)
                         run.problem_id = i
                         run.status = constants.RESULT_INCORRECT
 
@@ -131,7 +131,7 @@ class NowCoder:
                     for j in range(0, problem['waitingJudgeCount']):
                         run = Submission()
                         run.team_id = team_id
-                        run.timestamp = timestamp
+                        run.timestamp = max(0, timestamp - 1)
                         run.problem_id = i
                         run.status = constants.RESULT_PENDING
 
