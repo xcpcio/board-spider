@@ -44,7 +44,11 @@ class DOMjudge:
             team = Team()
 
             team_id = d_team["id"]
-            name = d_team["display_name"]
+
+            name = d_team["name"]
+            if d_team["display_name"] is not None:
+                name = d_team["display_name"]
+
             organization = d_team["affiliation"]
 
             team.team_id = team_id
