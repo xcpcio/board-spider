@@ -1,4 +1,4 @@
-from xcpcio_board_spider.core import utils
+from xcpcio_board_spider.core import utils, logger
 from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
 
 import json
@@ -15,7 +15,7 @@ class NowCoder:
 
         self.fetch_res_list = []
 
-        self.logger = utils.init_logger()
+        self.logger = logger.init_logger()
 
         self.teams = Teams()
         self.submissions = Submissions()

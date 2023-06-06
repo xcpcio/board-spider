@@ -85,19 +85,3 @@ def get_timestamp_second(dt):
 
 def get_now_timestamp_second():
     return int(time.time())
-
-
-def init_logger():
-    import logging
-
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter(
-        '%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setFormatter(formatter)
-
-    logger.addHandler(consoleHandler)
-
-    return logger
