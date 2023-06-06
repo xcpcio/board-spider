@@ -3,7 +3,7 @@ from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissio
 from domjudge_utility import Dump, DumpConfig
 
 
-class DOMjudge():
+class DOMjudge:
     CONSTANT_EXTRA_DOMJUDGE_TEAM = "domjudge_team"
 
     def __init__(self,

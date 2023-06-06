@@ -7,7 +7,7 @@ from xcpcio_board_spider.core import utils
 from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
 
 
-class DOMjudge():
+class DOMjudge:
     CONSTANT_IS_DEFAULT_OBSERVERS_TEAM = "is_default_observers_team"
     CONSTANT_CLASS_ATTR = "class_attr"
 
