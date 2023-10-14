@@ -27,9 +27,6 @@ class CSG_CPC():
             resp = requests.get(uri, timeout=10)
             resp_obj = json.loads(resp.text)
 
-        if int(resp_obj["code"]) != 200:
-            raise RuntimeError("Invalid response")
-
         return resp_obj
 
     def fetch(self):
@@ -38,11 +35,11 @@ class CSG_CPC():
 
         for team_uri in self.team_uris:
             resp_obj = self.fetch_resp_obj(team_uri)
-            raw_team_data.extend(resp_obj["data"])
+            raw_team_data.extend(resp_obj)
 
         for run_uri in self.run_uris:
             resp_obj = self.fetch_resp_obj(run_uri)
-            raw_run_data.extend(resp_obj["data"])
+            raw_run_data.extend(resp_obj)
 
         self.raw_team_data = raw_team_data
         self.raw_run_data = raw_run_data
@@ -65,12 +62,14 @@ class CSG_CPC():
             members = raw_team["tmember"].split("、")
             coach = raw_team["coach"]
             kind = int(raw_team["tkind"])
+            room = str(raw_team["room"])
 
             team.team_id = team_id
             team.name = name
             team.organization = school
             team.members = members
             team.coach = coach
+            team.location = room
 
             if kind == 0:
                 team.official = True
@@ -88,6 +87,72 @@ class CSG_CPC():
 
         return self
 
+    def parse_result(self, result: int):
+        """
+        4    => 'Accepted',
+        5    => 'Presentation Error',
+        6    => 'Wrong Answer',
+        7    => 'Time Limit Exceed',
+        8    => 'Memory Limit Exceed',
+        9    => 'Output Limit Exceed',
+        10   => 'Runtime Error',
+        11   => 'Compile Error',
+        13   => 'Tested',
+        100  => 'Unknown',
+        0    => 'Pending',
+        1    => 'Pending Rejudging',
+        2    => 'Compiling',
+        3    => 'Running&Judging',
+        -1   => 'Frozen',
+
+        CE 不罚时, PE 罚时
+        """
+
+        if result == 4:
+            return constants.RESULT_ACCEPTED
+
+        if result == 5:
+            return constants.RESULT_PRESENTATION_ERROR
+
+        if result == 6:
+            return constants.RESULT_WRONG_ANSWER
+
+        if result == 7:
+            return constants.RESULT_TIME_LIMIT_EXCEEDED
+
+        if result == 8:
+            return constants.RESULT_MEMORY_LIMIT_EXCEEDED
+
+        if result == 9:
+            return constants.RESULT_OUTPUT_LIMIT_EXCEEDED
+
+        if result == 10:
+            return constants.RESULT_RUNTIME_ERROR
+
+        if result == 11:
+            return constants.RESULT_COMPILATION_ERROR
+
+        if result == 13:
+            return constants.RESULT_UNDEFINED
+
+        if result == 100:
+            return constants.RESULT_UNKNOWN
+
+        if result == 0:
+            return constants.RESULT_PENDING
+
+        if result == 1:
+            return constants.RESULT_JUDGING
+
+        if result == 2:
+            return constants.RESULT_COMPILING
+
+        if result == 3:
+            return constants.RESULT_JUDGING
+
+        if result == -1:
+            return constants.RESULT_FROZEN
+
     def parse_runs(self):
         runs = Submissions()
 
@@ -102,40 +167,22 @@ class CSG_CPC():
             "2023-05-13T15:33:27"
         ],
 
-solution_id
-contest_id
-problem_id
-user_id
-result
-in_date
-
-        4    =>   Accepted'],
-        5    =>    'Presentation Error'],
-        6    =>    'Wrong Answer'],
-        7    =>   Time Limit Exceed'],
-        8    =>   Memory Limit Exceed'],
-        9    =>   Output Limit Exceed'],
-        10    =>  Runtime Error'],
-        11    =>  Compile Error'],
-        13    =>  Tested'],
-        100    => Unknown'],
-        0    =>    'Pending'],
-        1    =>    'Pending Rejudging'],
-        2    =>    'Compiling'],
-        3    =>    'Running&Judging'],
-        -1 => 封榜后的未知结果
-
-        CE不罚时，PE罚时
+        solution_id
+        contest_id
+        problem_id
+        user_id
+        result
+        in_date
         """
 
         for raw_run in self.raw_run_data:
             run = Submission()
 
-            submission_id = str(raw_run[0])
-            problem_id = int(raw_run[2])
-            team_id = str(raw_run[3])
-            result = int(raw_run[4])
-            in_date = str(raw_run[5]).replace("T", " ")
+            submission_id = str(raw_run["solution_id"])
+            problem_id = int(raw_run["problem_id"])
+            team_id = str(raw_run["user_id"]).split("_")[-1]
+            result = int(raw_run["result"])
+            in_date = str(raw_run["in_date"]).replace("T", " ")
             timestamp = utils.get_timestamp_second(
                 in_date) - self.contest.start_time
 
@@ -144,15 +191,7 @@ in_date
             run.problem_id = problem_id
             run.timestamp = timestamp
 
-            if result == 4:
-                run.status = constants.RESULT_CORRECT
-            elif result in [0, 1, 2, 3, -1]:
-                run.status = constants.RESULT_PENDING
-            else:
-                run.status = constants.RESULT_INCORRECT
-
-            if result in [11, 13, 100]:
-                continue
+            run.status = self.parse_result(result)
 
             runs.append(run)
 
