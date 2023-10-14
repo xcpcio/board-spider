@@ -14,6 +14,7 @@ class Team:
                  official: bool = False,
                  unofficial: bool = False,
                  girl: bool = False,
+                 location: str = "",
                  extra: typing.Dict[str, typing.Any] = None):
         self.team_id = team_id
         self.name = name
@@ -25,6 +26,8 @@ class Team:
         self.official = official
         self.unofficial = unofficial
         self.girl = girl
+
+        self.location = location
 
         if extra is None:
             self.extra = {}
