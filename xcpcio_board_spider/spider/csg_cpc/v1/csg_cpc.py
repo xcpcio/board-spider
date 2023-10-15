@@ -60,7 +60,7 @@ class CSG_CPC():
             name = raw_team["name"]
             school = raw_team["school"]
             members = raw_team["tmember"].split("、")
-            coach = raw_team["coach"]
+            coach = str(raw_team["coach"])
             kind = int(raw_team["tkind"])
             room = str(raw_team["room"])
 
@@ -69,7 +69,9 @@ class CSG_CPC():
             team.organization = school
             team.members = members
             team.coach = coach
-            team.location = room
+
+            if len(room) > 0:
+                team.location = room
 
             if kind == 0:
                 team.official = True
