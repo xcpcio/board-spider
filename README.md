@@ -3,6 +3,17 @@
 [![Test][test-ci-badge]][test-ci]
 [![GitHub release][gh-release-badge]][gh-release]
 
+## Development
+
+```bash
+# run test
+poetry run pytest
+poetry run pytest --snapshot-update
+
+# release
+poetry version patch
+```
+
 ## License
 
 [MIT](./LICENSE) License © 2023 [XCPCIO][xcpcio]
