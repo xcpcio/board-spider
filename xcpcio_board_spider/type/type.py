@@ -3,9 +3,10 @@ import typing
 
 
 class Image:
-    def __init__(self, url: str = None, base64: str = None):
+    def __init__(self, url: str = None, base64: str = None, preset: str = None):
         self.url = url
         self.base64 = base64
+        self.preset = preset
 
     @property
     def get_dict(self):
@@ -17,6 +18,9 @@ class Image:
         if self.base64 is not None:
             obj['base64'] = self.base64
 
+        if self.preset is not None:
+            obj['preset'] = self.preset
+
         return obj
 
     def from_dict(self, d: typing.Any):
@@ -25,6 +29,9 @@ class Image:
 
         if "base64" in d.keys():
             self.base64 = d["base64"]
+
+        if "preset" in d.keys():
+            self.preset = d["preset"]
 
     @property
     def get_json(self):
