@@ -45,3 +45,9 @@ TEAM_TYPE_GIRL = "girl"
 TEAM_TYPE_ZH_CN_OFFICIAL = "正式队伍"
 TEAM_TYPE_ZH_CH_UNOFFICIAL = "打星队伍"
 TEAM_TYPE_ZH_CH_GIRL = "女队"
+
+FULL_STATUS_TIME_DISPLAY = {
+    RESULT_CORRECT.lower(): True,
+    RESULT_INCORRECT.lower(): True,
+    RESULT_PENDING.lower(): True,
+}

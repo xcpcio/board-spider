@@ -1,6 +1,6 @@
 import os
 
-from xcpcio_board_spider import Contest
+from xcpcio_board_spider import Contest, constants
 from xcpcio_board_spider.spider.zoj.v2 import ZOJ
 
 current_file_path = os.path.abspath(__file__)
@@ -13,6 +13,8 @@ def test_spider_zoj_v2_8th_ccpc_final(snapshot):
         current_dir_path, "test_data", test_prefix)
 
     c = Contest()
+    c.status_time_display = constants.FULL_STATUS_TIME_DISPLAY
+
     z = ZOJ(c, fetch_uri_prefix)
 
     z.fetch().parse_teams().parse_runs()
@@ -20,5 +22,6 @@ def test_spider_zoj_v2_8th_ccpc_final(snapshot):
     assert len(z.teams) == 132
     assert len(z.runs) == 946
 
+    snapshot.assert_match(z.contest.get_json, "contest")
     snapshot.assert_match(z.teams.get_json, "teams")
     snapshot.assert_match(z.runs.get_json, "runs")
