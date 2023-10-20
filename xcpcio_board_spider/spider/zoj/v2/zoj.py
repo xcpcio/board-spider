@@ -86,7 +86,7 @@ class ZOJ:
 
             run.team_id = raw_run[0]
             run.problem_id = ord(raw_run[1]) - ord('A')
-            run.timestamp = (int(raw_run[2] // 1000) // 60) * 60
+            run.timestamp = int(raw_run[2] // 1000)
 
             status = raw_run[3]
             if status == "AC":
