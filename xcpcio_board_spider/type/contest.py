@@ -57,8 +57,8 @@ class Contest:
     def fill_balloon_color(self):
         default_balloon_color_list = [
             Color(background_color='rgba(189, 14, 14, 0.7)', color='#fff'),
-            Color(background_color='#951FD9', color='#fff'),
-            Color(background_color='rgba(255, 255, 255, 0.7)', color='#000'),
+            Color(background_color='rgba(149, 31, 217, 0.7)', color='#fff'),
+            Color(background_color='rgba(0, 64, 128, 0.7)', color='#fff'),
             Color(background_color='rgba(38, 185, 60, 0.7)', color='#fff'),
             Color(background_color='rgba(239, 217, 9, 0.7)', color='#000'),
             Color(background_color='rgba(243, 88, 20, 0.7)', color='#fff'),
@@ -68,7 +68,8 @@ class Contest:
             Color(background_color='rgba(159, 19, 236, 0.7)', color='#fff'),
             Color(background_color='rgba(42, 197, 202, 0.7)', color='#000'),
             Color(background_color='rgba(142, 56, 54, 0.7)', color='#fff'),
-            Color(background_color='rgba(0, 0, 0, 0.7)', color='#fff'),
+            Color(background_color='rgba(144, 238, 144, 0.7)', color='#000'),
+            Color(background_color='rgba(77, 57, 0, 0.7)', color='#fff'),
         ]
 
         self.balloon_color = default_balloon_color_list[:self.problem_quantity]
