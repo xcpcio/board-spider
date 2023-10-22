@@ -32,3 +32,14 @@ def test_contest_json(snapshot):
     c.contest_name = "test_name"
 
     snapshot.assert_match(c.get_json, "test_contest")
+
+
+def test_contest_options(snapshot):
+    c = board.Contest()
+
+    o = board.ContestOptions()
+    o.calculation_of_penalty = board.constants.CALCULATION_OF_PENALTY_ACCUMULATE_IN_SECONDS_AND_FINALLY_TO_THE_MINUTE
+
+    c.options = o
+
+    snapshot.assert_match(c.get_json, "test_contest_options")

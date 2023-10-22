@@ -18,7 +18,9 @@ class Contest:
                  status_time_display: typing.Any = None,
                  medal: typing.Any = {},
                  balloon_color: typing.List[Color] = None,
-                 logo: Image = None):
+                 logo: Image = None,
+                 options: ContestOptions = None,
+                 ):
         self.contest_name = contest_name
         self.start_time = start_time
         self.end_time = end_time
@@ -30,6 +32,7 @@ class Contest:
         self.organization = organization
         self.status_time_display = status_time_display
         self.medal = medal
+        self.options = options
 
         if balloon_color is not None:
             self.balloon_color = [Color(**item) for item in balloon_color]
@@ -97,6 +100,9 @@ class Contest:
 
         if self.logo is not None:
             obj["logo"] = self.logo.get_dict
+
+        if self.options is not None:
+            obj["options"] = self.options.get_dict
 
         return obj
 

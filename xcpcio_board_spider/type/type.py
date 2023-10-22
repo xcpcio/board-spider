@@ -68,3 +68,28 @@ class Color:
 
     def from_json(self, json_string: str):
         self.from_dict(json.loads(json_string))
+
+
+class ContestOptions:
+    def __init__(self, calculation_of_penalty: str = None):
+        self.calculation_of_penalty = calculation_of_penalty
+
+    @property
+    def get_dict(self):
+        obj = {}
+
+        if self.calculation_of_penalty is not None:
+            obj["calculation_of_penalty"] = self.calculation_of_penalty
+
+        return obj
+
+    def from_dict(self, d: typing.Any):
+        if "calculation_of_penalty" in d.keys():
+            self.color = d["calculation_of_penalty"]
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)
+
+    def from_json(self, json_string: str):
+        self.from_dict(json.loads(json_string))
