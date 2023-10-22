@@ -133,11 +133,12 @@ class DOMjudge:
                     cnt = int(score_correct[0].select(
                         'span')[0].string.strip().split(' ')[0])
 
-                    submission.timestamp = timestamp
+                    submission.timestamp = max(0, timestamp - 60)
                     submission.status = constants.RESULT_INCORRECT
                     self.runs += [copy.deepcopy(submission)
                                   for _ in range(1, cnt)]
 
+                    submission.timestamp = timestamp
                     submission.status = constants.RESULT_CORRECT
                     self.runs.append(copy.deepcopy(submission))
 
