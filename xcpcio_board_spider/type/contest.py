@@ -44,6 +44,11 @@ class Contest:
         else:
             self.logo = None
 
+        if options is not None:
+            self.options = options
+        else:
+            self.options = ContestOptions()
+
     def append_balloon_color(self, Color):
         if self.balloon_color is None:
             self.balloon_color = []
@@ -101,8 +106,7 @@ class Contest:
         if self.logo is not None:
             obj["logo"] = self.logo.get_dict
 
-        if self.options is not None:
-            obj["options"] = self.options.get_dict
+        obj["options"] = self.options.get_dict
 
         return obj
 
