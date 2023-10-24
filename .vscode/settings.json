@@ -29,7 +29,8 @@
         "tkind",
         "tmember",
         "XCPCIO",
-        "xlrd"
+        "xlrd",
+        "xmltodict"
     ],
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"

@@ -1,4 +1,4 @@
-# XCPCIO-Board-Spider
+# xcpcio/board-spider
 
 [![Test][test-ci-badge]][test-ci]
 [![GitHub release][gh-release-badge]][gh-release]
@@ -16,7 +16,7 @@ poetry version patch
 
 ## License
 
-[MIT](./LICENSE) License © 2023 [XCPCIO][xcpcio]
+[MIT](./LICENSE) License © 2020 - PRESENT [XCPCIO][xcpcio]
 
 [xcpcio]: https://github.com/XCPCIO
 [test-ci-badge]: https://github.com/XCPCIO/XCPCIO-Board-Spider/workflows/Test/badge.svg
