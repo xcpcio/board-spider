@@ -79,6 +79,9 @@ class Ghost:
         if result == "TL":
             return constants.RESULT_TIME_LIMIT_EXCEEDED
 
+        if result == "CE":
+            return constants.RESULT_COMPILATION_ERROR
+
         return constants.RESULT_UNKNOWN
 
     def parse_teams(self):
