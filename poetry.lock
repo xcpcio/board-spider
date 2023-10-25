@@ -369,13 +369,13 @@ files = [
 
 [[package]]
 name = "domjudge-utility"
-version = "0.0.8"
+version = "0.0.12"
 description = "DOMjudge Utility"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "domjudge_utility-0.0.8-py3-none-any.whl", hash = "sha256:a940aa47cbec6f60188de3e769b771795b0b73c7b58fd76c8d615b03941b370b"},
-    {file = "domjudge_utility-0.0.8.tar.gz", hash = "sha256:7fecfcdf0636736fb65d9d5ed16c362a61d94652b06db73973137e06c9cbf77d"},
+    {file = "domjudge_utility-0.0.12-py3-none-any.whl", hash = "sha256:c252c63c1c93482dbfd4dc2b4e9b969de50d1f9aef4f57638b02fd9bb33dc7fd"},
+    {file = "domjudge_utility-0.0.12.tar.gz", hash = "sha256:340f48dd70089ade92616785938a504d9c584487dca4ec06de1a1261e21025b5"},
 ]
 
 [package.dependencies]
@@ -1950,4 +1950,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "0c49aadaa63413ded2256dfbee0a903f2fd9ce2628a4b4d08bcc987cdc3c60be"
+content-hash = "cacf99438ed9b86a34fcf09f24e3f4ae0168fdf86e2250b73443009d5e88ebd0"
