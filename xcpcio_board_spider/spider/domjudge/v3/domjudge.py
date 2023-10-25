@@ -37,6 +37,33 @@ class DOMjudge:
 
         return (hour * 3600 + minute * 60 + second) * 1000 + millisecond
 
+    def parse_result(self, result: str):
+        if result == "AC":
+            return constants.RESULT_ACCEPTED
+
+        if result == "WA" or result == "NO":
+            return constants.RESULT_WRONG_ANSWER
+
+        if result == "CE":
+            return constants.RESULT_COMPILATION_ERROR
+
+        if result == "PE":
+            return constants.RESULT_PRESENTATION_ERROR
+
+        if result == "MLE":
+            return constants.RESULT_MEMORY_LIMIT_EXCEEDED
+
+        if result == "OLE":
+            return constants.RESULT_OUTPUT_LIMIT_EXCEEDED
+
+        if result == "RTE":
+            return constants.RESULT_RUNTIME_ERROR
+
+        if result == "TLE":
+            return constants.RESULT_TIME_LIMIT_EXCEEDED
+
+        return constants.RESULT_UNKNOWN
+
     def parse_teams(self):
         self.teams = Teams()
 
@@ -86,16 +113,7 @@ class DOMjudge:
             submission.team_id = team_id
             submission.submission_id = submission_id
             submission.timestamp = timestamp
-
-            if verdict == "CE":
-                continue
-
-            if verdict == "AC":
-                submission.status = constants.RESULT_CORRECT
-            elif verdict == "PD":
-                submission.status = constants.RESULT_PENDING
-            else:
-                submission.status = constants.RESULT_INCORRECT
+            submission.status = self.parse_result(verdict)
 
             p = self.dump.problems_dict[problem_id]
             submission.problem_id = p["ordinal"]
