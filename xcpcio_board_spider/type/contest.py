@@ -2,6 +2,7 @@ import typing
 import json
 
 from .type import *
+from .constants import *
 
 
 class Contest:
@@ -9,12 +10,12 @@ class Contest:
                  contest_name: str = "",
                  start_time: int = 0,
                  end_time: int = 0,
-                 frozen_time: int = 0,
-                 penalty: int = 0,
+                 frozen_time: int = 60 * 60,
+                 penalty: int = 20 * 60,
                  problem_quantity: int = 0,
                  problem_id: typing.List[str] = [],
                  group: typing.Any = None,
-                 organization: str = "",
+                 organization: str = "School",
                  status_time_display: typing.Any = None,
                  medal: typing.Any = {},
                  balloon_color: typing.List[Color] = None,
@@ -33,6 +34,15 @@ class Contest:
         self.status_time_display = status_time_display
         self.medal = medal
         self.options = options
+
+        if self.group is None:
+            self.group = {
+                TEAM_TYPE_OFFICIAL: TEAM_TYPE_ZH_CN_OFFICIAL,
+                TEAM_TYPE_UNOFFICIAL: TEAM_TYPE_ZH_CH_UNOFFICIAL,
+            }
+
+        if self.status_time_display is None:
+            self.status_time_display = FULL_STATUS_TIME_DISPLAY
 
         if balloon_color is not None:
             self.balloon_color = [Color(**item) for item in balloon_color]
