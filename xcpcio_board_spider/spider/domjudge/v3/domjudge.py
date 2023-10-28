@@ -62,6 +62,9 @@ class DOMjudge:
         if result == "TLE":
             return constants.RESULT_TIME_LIMIT_EXCEEDED
 
+        if result is None:
+            return constants.RESULT_PENDING
+
         return constants.RESULT_UNKNOWN
 
     def parse_teams(self):
@@ -103,7 +106,7 @@ class DOMjudge:
                 continue
 
             timestamp = self.get_submission_timestamp_millisecond(
-                contest_time) // 1000 // 60 * 60
+                contest_time) // 1000
 
             if timestamp > self.contest.end_time - self.contest.start_time:
                 continue
