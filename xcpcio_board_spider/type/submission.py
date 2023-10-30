@@ -4,26 +4,41 @@ import json
 
 class Submission:
     def __init__(self,
+                 status: str = "",
                  team_id: str = "",
                  problem_id: int = 0,
                  timestamp: int = 0,
-                 status: str = "",
+                 timestamp_ms: int = None,
+                 time: int = None,
+                 language: str = None,
                  submission_id: str = None):
+        self.status = status
         self.team_id = team_id
         self.problem_id = problem_id
         self.timestamp = timestamp
-        self.status = status
 
+        self.timestamp_ms = timestamp_ms
+        self.time = time
+        self.language = language
         self.submission_id = submission_id
 
     @property
     def get_dict(self):
         obj = {}
 
+        obj["status"] = self.status
         obj["team_id"] = self.team_id
         obj["problem_id"] = self.problem_id
         obj["timestamp"] = self.timestamp
-        obj["status"] = self.status
+
+        if self.timestamp_ms is not None:
+            obj["timestamp_ms"] = self.timestamp_ms
+
+        if self.time is not None:
+            obj["time"] = self.time
+
+        if self.language is not None:
+            obj["language"] = self.language
 
         if self.submission_id is not None:
             obj["submission_id"] = self.submission_id
