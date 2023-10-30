@@ -1,3 +1,5 @@
+import math
+
 from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
 
 from domjudge_utility import Dump, DumpConfig
@@ -100,23 +102,32 @@ class DOMjudge:
             submission_id = s["id"]
             problem_id = s["problem_id"]
             contest_time = s["contest_time"]
+            language_name = s["language_name"]
+
+            time = s["max_run_time"]
+            if time is not None:
+                time = int(math.floor(float(time) * 1000))
 
             # ignore submissions that are not submit after contest start
             if contest_time.startswith("-"):
                 continue
 
-            timestamp = self.get_submission_timestamp_millisecond(
-                contest_time) // 1000
+            timestamp_ms = self.get_submission_timestamp_millisecond(
+                contest_time)
+            timestamp = timestamp_ms // 1000
 
             if timestamp > self.contest.end_time - self.contest.start_time:
                 continue
 
             verdict = s["verdict"]
+            submission.status = self.parse_result(verdict)
 
             submission.team_id = team_id
             submission.submission_id = submission_id
             submission.timestamp = timestamp
-            submission.status = self.parse_result(verdict)
+            submission.timestamp_ms = timestamp_ms
+            submission.language = language_name
+            submission.time = time
 
             p = self.dump.problems_dict[problem_id]
             submission.problem_id = p["ordinal"]
