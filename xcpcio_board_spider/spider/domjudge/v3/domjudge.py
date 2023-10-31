@@ -12,6 +12,8 @@ class DOMjudge:
                  contest: Contest = None,
                  fetch_uri: str = None):
         self.contest = contest
+        self.contest.options.submission_timestamp_unit = constants.SUBMISSION_TIMESTAMP_UNIT_MILLISECOND
+
         self.fetch_uri = fetch_uri
 
         self.dump_config = DumpConfig()
@@ -124,8 +126,7 @@ class DOMjudge:
 
             submission.team_id = team_id
             submission.submission_id = submission_id
-            submission.timestamp = timestamp
-            submission.timestamp_ms = timestamp_ms
+            submission.timestamp = timestamp_ms
             submission.language = language_name
             submission.time = time
 

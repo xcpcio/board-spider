@@ -71,8 +71,12 @@ class Color:
 
 
 class ContestOptions:
-    def __init__(self, calculation_of_penalty: str = None):
+    def __init__(self,
+                 calculation_of_penalty: str = None,
+                 submission_timestamp_unit: str = None,
+                 ):
         self.calculation_of_penalty = calculation_of_penalty
+        self.submission_timestamp_unit = submission_timestamp_unit
 
     @property
     def get_dict(self):
@@ -81,11 +85,17 @@ class ContestOptions:
         if self.calculation_of_penalty is not None:
             obj["calculation_of_penalty"] = self.calculation_of_penalty
 
+        if self.submission_timestamp_unit is not None:
+            obj["submission_timestamp_unit"] = self.submission_timestamp_unit
+
         return obj
 
     def from_dict(self, d: typing.Any):
         if "calculation_of_penalty" in d.keys():
             self.color = d["calculation_of_penalty"]
+
+        if "submission_timestamp_unit" in d.keys():
+            self.submission_timestamp_unit = d["submission_timestamp_unit"]
 
     @property
     def get_json(self):
