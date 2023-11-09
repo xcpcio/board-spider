@@ -7,12 +7,13 @@ from xcpcio_board_spider import Contest, Team, Teams, Submission, Submissions, u
 
 
 class CSG_CPC():
-    def __init__(self, contest: Contest, team_uris: typing.List[str], run_uris: typing.List[str]):
+    def __init__(self, contest: Contest,
+                 fetch_uri: str = None):
         self.contest = contest
+        self.fetch_uri = fetch_uri
 
-        self.team_uris = team_uris
-        self.run_uris = run_uris
-
+        self.raw_problem_data = []
+        self.raw_problem_map = {}
         self.raw_team_data = []
         self.raw_run_data = []
 
@@ -25,24 +26,39 @@ class CSG_CPC():
                 resp_obj = json.loads(f.read())
         else:
             resp = requests.get(uri, timeout=10)
+
+            if resp.status_code != 200:
+                raise RuntimeError(
+                    "fetch failed. [status_code=%s]" % resp.status_code)
+
             resp_obj = json.loads(resp.text)
 
         return resp_obj
 
     def fetch(self):
+        raw_problem_data = []
         raw_team_data = []
         raw_run_data = []
 
-        for team_uri in self.team_uris:
-            resp_obj = self.fetch_resp_obj(team_uri)
-            raw_team_data.extend(resp_obj)
+        resp_obj = self.fetch_resp_obj(self.fetch_uri + "/problem.json")
+        raw_problem_data.extend(resp_obj)
 
-        for run_uri in self.run_uris:
-            resp_obj = self.fetch_resp_obj(run_uri)
-            raw_run_data.extend(resp_obj)
+        resp_obj = self.fetch_resp_obj(self.fetch_uri + "/team.json")
+        raw_team_data.extend(resp_obj)
 
+        resp_obj = self.fetch_resp_obj(self.fetch_uri + "/solution.json")
+        raw_run_data.extend(resp_obj)
+
+        self.raw_problem_data = raw_problem_data
         self.raw_team_data = raw_team_data
         self.raw_run_data = raw_run_data
+
+        for p in self.raw_problem_data:
+            self.raw_problem_map[p["problem_id"]] = p
+
+        for r in self.raw_run_data:
+            problem_id = r["problem_id"]
+            r["problem_id"] = self.raw_problem_map[problem_id]["num"]
 
         return self
 
