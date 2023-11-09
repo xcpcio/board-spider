@@ -1,6 +1,6 @@
 import math
 
-from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
+from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants, Color
 
 from domjudge_utility import Dump, DumpConfig
 
@@ -136,3 +136,12 @@ class DOMjudge:
             self.runs.append(submission)
 
         return self
+
+    def update_contest(self):
+        self.contest.problem_quantity = len(self.dump.problems)
+        self.contest.fill_problem_id()
+
+        self.contest.balloon_color = []
+        for p in self.dump.problems:
+            self.contest.balloon_color.append(
+                Color(background_color=p["rgb"], color="#000"))
