@@ -14,6 +14,7 @@ class CSG_CPC():
 
         self.raw_problem_data = []
         self.raw_problem_map = {}
+        self.raw_contest_data = {}
         self.raw_team_data = []
         self.raw_run_data = []
 
@@ -39,6 +40,9 @@ class CSG_CPC():
         raw_problem_data = []
         raw_team_data = []
         raw_run_data = []
+
+        resp_obj = self.fetch_resp_obj(self.fetch_uri + "/contest.json")
+        self.raw_contest_data = resp_obj
 
         resp_obj = self.fetch_resp_obj(self.fetch_uri + "/problem.json")
         raw_problem_data.extend(resp_obj)
@@ -216,3 +220,12 @@ class CSG_CPC():
         self.runs = runs
 
         return self
+
+    def update_contest(self):
+        start_time = self.raw_contest_data["start_time"]
+        end_time = self.raw_contest_data["end_time"]
+        frozen_minute = self.raw_contest_data["frozen_minute"]
+
+        self.contest.start_time = utils.get_timestamp_second(start_time)
+        self.contest.end_time = utils.get_timestamp_second(end_time)
+        self.contest.frozen_time = int(frozen_minute) * 60

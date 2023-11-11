@@ -20,5 +20,6 @@ def test_spider_csg_cpc_v1_2023_hncpc(snapshot):
     assert len(csg_cpc.teams) == 180
     assert len(csg_cpc.runs) == 2336
 
+    snapshot.assert_match(csg_cpc.contest.get_json, "contest")
     snapshot.assert_match(csg_cpc.teams.get_json, "teams")
     snapshot.assert_match(csg_cpc.runs.get_json, "runs")
