@@ -83,5 +83,14 @@ def get_timestamp_second(dt):
     return int(timestamp)
 
 
+def get_timestamp_from_iso8601(dt):
+    from datetime import datetime
+
+    datetime_obj = datetime.fromisoformat(dt)
+    timestamp = datetime_obj.timestamp()
+
+    return int(timestamp)
+
+
 def get_now_timestamp_second():
     return int(time.time())

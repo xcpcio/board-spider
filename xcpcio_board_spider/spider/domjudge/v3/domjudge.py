@@ -1,6 +1,7 @@
 import math
 
 from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants, Color
+from xcpcio_board_spider import utils
 
 from domjudge_utility import Dump, DumpConfig
 
@@ -148,10 +149,12 @@ class DOMjudge:
 
         start_time = self.dump.contest["start_time"]
         end_time = self.dump.contest["end_time"]
-        self.contest.start_time = start_time
-        self.contest.end_time = end_time
+        self.contest.start_time = utils.get_timestamp_from_iso8601(start_time)
+        self.contest.end_time = utils.get_timestamp_from_iso8601(end_time)
 
         if "scoreboard_freeze_duration" in self.dump.contest.keys() and self.dump.contest["scoreboard_freeze_duration"] is not None:
             scoreboard_freeze_duration = self.dump.contest["scoreboard_freeze_duration"]
             self.contest.frozen_time = self.get_submission_timestamp_millisecond(
                 scoreboard_freeze_duration) // 1000
+
+        return self
