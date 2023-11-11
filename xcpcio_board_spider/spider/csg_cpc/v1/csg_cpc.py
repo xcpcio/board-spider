@@ -226,6 +226,6 @@ class CSG_CPC():
         end_time = self.raw_contest_data["end_time"]
         frozen_minute = self.raw_contest_data["frozen_minute"]
 
-        self.contest.start_time = utils.get_timestamp_second(start_time)
-        self.contest.end_time = utils.get_timestamp_second(end_time)
+        self.contest.start_time = start_time.replace(" ", "T") + "+08:00"
+        self.contest.end_time = end_time.replace(" ", "T") + "+08:00"
         self.contest.frozen_time = int(frozen_minute) * 60
