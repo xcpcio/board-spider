@@ -145,3 +145,13 @@ class DOMjudge:
         for p in self.dump.problems:
             self.contest.balloon_color.append(
                 Color(background_color=p["rgb"], color="#000"))
+
+        start_time = self.dump.contest["start_time"]
+        end_time = self.dump.contest["end_time"]
+        self.contest.start_time = start_time
+        self.contest.end_time = end_time
+
+        if "scoreboard_freeze_duration" in self.dump.contest.keys() and self.dump.contest["scoreboard_freeze_duration"] is not None:
+            scoreboard_freeze_duration = self.dump.contest["scoreboard_freeze_duration"]
+            self.contest.frozen_time = self.get_submission_timestamp_millisecond(
+                scoreboard_freeze_duration) // 1000

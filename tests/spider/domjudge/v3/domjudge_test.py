@@ -17,10 +17,11 @@ def test_spider_domjudge_v3_9th_ccpc_guilin(snapshot):
     fetch_uri = os.path.join(current_dir_path, "test_data", test_prefix)
 
     d = DOMjudge(c, fetch_uri)
-    d.fetch().parse_teams().parse_runs()
+    d.fetch().parse_teams().parse_runs().update_contest()
 
     assert len(d.teams) == 270
     assert len(d.runs) == 3360
 
+    snapshot.assert_match(d.contest.get_json, "contest")
     snapshot.assert_match(d.teams.get_json, "teams")
     snapshot.assert_match(d.runs.get_json, "runs")
