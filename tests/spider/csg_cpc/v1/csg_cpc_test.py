@@ -15,10 +15,11 @@ def test_spider_csg_cpc_v1_2023_hncpc(snapshot):
     fetch_uri = os.path.join(current_dir_path, "test_data/2023_hncpc")
 
     csg_cpc = CSG_CPC(c, fetch_uri)
-    csg_cpc.fetch().parse_teams().parse_runs()
+    csg_cpc.fetch().parse_teams().parse_runs().update_contest()
 
     assert len(csg_cpc.teams) == 180
     assert len(csg_cpc.runs) == 2336
 
+    snapshot.assert_match(csg_cpc.contest.get_json, "contest")
     snapshot.assert_match(csg_cpc.teams.get_json, "teams")
     snapshot.assert_match(csg_cpc.runs.get_json, "runs")
