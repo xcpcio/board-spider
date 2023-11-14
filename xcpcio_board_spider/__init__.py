@@ -1,4 +1,4 @@
 from .type import *
 from .core import *
 
-__version__ = "0.0.57"
+__version__ = "0.0.58"
