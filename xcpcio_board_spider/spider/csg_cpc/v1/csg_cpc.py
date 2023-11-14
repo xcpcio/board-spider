@@ -66,6 +66,9 @@ class CSG_CPC():
 
         return self
 
+    def get_timestamp_from_date(self, dt):
+        return utils.get_timestamp_from_iso8601(dt.replace(" ", "T") + "+08:00")
+
     def parse_teams(self):
         teams = Teams()
 
@@ -177,26 +180,6 @@ class CSG_CPC():
 
     def parse_runs(self):
         runs = Submissions()
-
-        """
-
-        [
-            6,
-            1001,
-            1000,
-            "team111",
-            6,
-            "2023-05-13T15:33:27"
-        ],
-
-        solution_id
-        contest_id
-        problem_id
-        user_id
-        result
-        in_date
-        """
-
         for raw_run in self.raw_run_data:
             run = Submission()
 
@@ -205,7 +188,7 @@ class CSG_CPC():
             team_id = str(raw_run["user_id"]).split("_")[-1]
             result = int(raw_run["result"])
             in_date = str(raw_run["in_date"]).replace("T", " ")
-            timestamp = utils.get_timestamp_second(
+            timestamp = self.get_timestamp_from_date(
                 in_date) - self.contest.start_time
 
             run.submission_id = str(submission_id)
@@ -226,6 +209,9 @@ class CSG_CPC():
         end_time = self.raw_contest_data["end_time"]
         frozen_minute = self.raw_contest_data["frozen_minute"]
 
-        self.contest.start_time = start_time.replace(" ", "T") + "+08:00"
-        self.contest.end_time = end_time.replace(" ", "T") + "+08:00"
+        self.contest.start_time = self.get_timestamp_from_date(start_time)
+        self.contest.end_time = self.get_timestamp_from_date(end_time)
+
         self.contest.frozen_time = int(frozen_minute) * 60
+
+        return self
