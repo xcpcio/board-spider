@@ -46,8 +46,14 @@ class DOMjudge:
         if result == "AC":
             return constants.RESULT_ACCEPTED
 
-        if result == "WA" or result == "NO":
+        if result == "WA":
             return constants.RESULT_WRONG_ANSWER
+
+        if result == "NO":
+            return constants.RESULT_NO_OUTPUT
+
+        if result == "RTE":
+            return constants.RESULT_RUNTIME_ERROR
 
         if result == "CE":
             return constants.RESULT_COMPILATION_ERROR
@@ -55,19 +61,16 @@ class DOMjudge:
         if result == "PE":
             return constants.RESULT_PRESENTATION_ERROR
 
+        if result == "TLE":
+            return constants.RESULT_TIME_LIMIT_EXCEEDED
+
         if result == "MLE":
             return constants.RESULT_MEMORY_LIMIT_EXCEEDED
 
         if result == "OLE":
             return constants.RESULT_OUTPUT_LIMIT_EXCEEDED
 
-        if result == "RTE":
-            return constants.RESULT_RUNTIME_ERROR
-
-        if result == "TLE":
-            return constants.RESULT_TIME_LIMIT_EXCEEDED
-
-        if result is None:
+        if result == "PD" or result is None:
             return constants.RESULT_PENDING
 
         return constants.RESULT_UNKNOWN
@@ -117,9 +120,8 @@ class DOMjudge:
 
             timestamp_ms = self.get_submission_timestamp_millisecond(
                 contest_time)
-            timestamp = timestamp_ms // 1000
 
-            if timestamp > self.contest.end_time - self.contest.start_time:
+            if timestamp_ms > (self.contest.end_time - self.contest.start_time) * 1000:
                 continue
 
             verdict = s["verdict"]
