@@ -159,4 +159,23 @@ class DOMjudge:
             self.contest.frozen_time = self.get_submission_timestamp_millisecond(
                 scoreboard_freeze_duration) // 1000
 
+        if len(self.dump.awards) == 0:
+            self.contest.medal = {}
+        else:
+            medal = {
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0
+            }
+
+            for item in self.dump.awards:
+                id = item["id"]
+                num = len(item["team_ids"])
+
+                if id.endswith("-medal"):
+                    medal[id.split("-")[0]] = num
+                    self.contest.medal = {
+                        "official": medal
+                    }
+
         return self
