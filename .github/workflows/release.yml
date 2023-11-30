@@ -107,10 +107,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to ALiYun Container Registry
+      - name: Login to ALiYun Shanghai Container Registry
         uses: docker/login-action@v3
         with:
-          registry: registry.cn-beijing.aliyuncs.com
+          registry: registry.cn-shanghai.aliyuncs.com
           username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
           password: ${{ secrets.ALIYUN_REGISTRY_TOKEN }}
 
@@ -134,7 +134,7 @@ jobs:
             docker.io/xcpcio/${{ env.image_name }}:latest
             ghcr.io/xcpcio/${{ env.image_name }}:${{ env.tag }}
             ghcr.io/xcpcio/${{ env.image_name }}:latest
-            registry.cn-beijing.aliyuncs.com/xcpcio/${{ env.image_name }}:${{ env.tag }}
-            registry.cn-beijing.aliyuncs.com/xcpcio/${{ env.image_name }}:latest
+            registry.cn-shanghai.aliyuncs.com/xcpcio/${{ env.image_name }}:${{ env.tag }}
+            registry.cn-shanghai.aliyuncs.com/xcpcio/${{ env.image_name }}:latest
           build-args: |
             XCPCIO_BOARD_SPIDER_VERSION=${{ env.tag }}
