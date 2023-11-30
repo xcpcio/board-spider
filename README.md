@@ -14,6 +14,14 @@ poetry run pytest --snapshot-update
 poetry version patch
 ```
 
+## Sponsors
+
+<p align="center">
+  <a href="https://github.com/sponsors/Dup4">
+    <img src='https://cdn.jsdelivr.net/gh/Dup4/static/sponsors-output/sponsors.svg' alt="Logos from Sponsors" />
+  </a>
+</p>
+
 ## License
 
 [MIT](./LICENSE) License © 2020 - PRESENT [XCPCIO][xcpcio]
