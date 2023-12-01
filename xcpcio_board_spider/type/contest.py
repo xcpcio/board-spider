@@ -11,6 +11,7 @@ class Contest:
                  start_time: int = 0,
                  end_time: int = 0,
                  frozen_time: int = 60 * 60,
+                 unfrozen_time: int = 0,
                  penalty: int = 20 * 60,
                  problem_quantity: int = 0,
                  problem_id: typing.List[str] = [],
@@ -26,6 +27,7 @@ class Contest:
         self.start_time = start_time
         self.end_time = end_time
         self.frozen_time = frozen_time
+        self.unfrozen_time = unfrozen_time
         self.penalty = penalty
         self.problem_quantity = problem_quantity
         self.problem_id = problem_id
