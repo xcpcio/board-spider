@@ -11,7 +11,7 @@ class Contest:
                  start_time: int = 0,
                  end_time: int = 0,
                  frozen_time: int = 60 * 60,
-                 unfrozen_time: int = 0,
+                 unfrozen_time: int = 0x3f3f3f3f3f3f3f3f,
                  penalty: int = 20 * 60,
                  problem_quantity: int = 0,
                  problem_id: typing.List[str] = [],
