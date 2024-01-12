@@ -22,6 +22,7 @@ class Contest:
                  balloon_color: typing.List[Color] = None,
                  logo: Image = None,
                  banner: Image = None,
+                 banner_mode: str = None,
                  options: ContestOptions = None,
                  ):
         self.contest_name = contest_name
@@ -61,6 +62,11 @@ class Contest:
             self.banner = Image(**banner)
         else:
             self.banner = None
+
+        if banner_mode is not None:
+            self.banner_mode = banner_mode
+        else:
+            self.banner_mode = None
 
         if options is not None:
             self.options = options
@@ -126,6 +132,9 @@ class Contest:
 
         if self.banner is not None:
             obj["banner"] = self.banner.get_dict
+
+        if self.banner_mode is not None:
+            obj["banner_mode"] = self.banner_mode
 
         obj["options"] = self.options.get_dict
 
