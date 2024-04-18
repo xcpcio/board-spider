@@ -6,6 +6,10 @@ import os
 from xcpcio_board_spider.core import utils
 from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
 
+'''
+For DOMjudge HTML
+'''
+
 
 class DOMjudge:
     CONSTANT_IS_DEFAULT_OBSERVERS_TEAM = "is_default_observers_team"

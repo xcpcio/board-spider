@@ -6,6 +6,11 @@ from xcpcio_board_spider import utils
 from domjudge_utility import Dump, DumpConfig
 
 
+'''
+For DOMjudge v4 API
+'''
+
+
 class DOMjudge:
     CONSTANT_EXTRA_DOMJUDGE_TEAM = "domjudge_team"
 
