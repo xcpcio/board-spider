@@ -4,7 +4,7 @@ import copy
 import os
 
 from xcpcio_board_spider.core import utils
-from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
+from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants, Color
 
 '''
 For DOMjudge HTML
@@ -82,6 +82,23 @@ class DOMjudge:
 
             yield tr
 
+    def parse_contest(self):
+        self.contest.problem_id = []
+        self.contest.balloon_color = []
+        for span in self.problem_spans_iterator():
+            inner_span = span.select('span')[0]
+            background_color = span['style'].split(
+                ':')[1].strip().split(';')[0].strip()
+            color = inner_span['style'].split(
+                ':')[1].strip().split(';')[0].strip()
+            problem_id = str(inner_span.string).strip()
+            self.contest.problem_id.append(problem_id)
+            self.contest.balloon_color.append(
+                Color(background_color=background_color, color=color))
+
+        self.contest.problem_quantity = len(self.contest.problem_id)
+        return self
+
     def parse_teams(self):
         self.teams = Teams()
 
@@ -89,11 +106,15 @@ class DOMjudge:
             team = Team()
             team_id = str(tr['id'].split(':')[1])
 
+            name = ""
+            organization = ""
+
             for item in tr.select('.forceWidth')[0].children:
                 name = item
 
-            for item in tr.select('.forceWidth')[1].children:
-                organization = item
+            if len(tr.select('.forceWidth')) > 1:
+                for item in tr.select('.forceWidth')[1].children:
+                    organization = item
 
             team.team_id = team_id
             team.name = name.strip()
