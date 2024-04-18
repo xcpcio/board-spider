@@ -82,6 +82,12 @@ class DOMjudge:
 
             yield tr
 
+    def problem_spans_iterator(self):
+        thead = self.soup.select('thead')[0]
+        spans = thead.find_all('span', class_='badge problem-badge')
+        for span in spans:
+            yield span
+
     def parse_contest(self):
         self.contest.problem_id = []
         self.contest.balloon_color = []
