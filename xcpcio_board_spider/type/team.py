@@ -15,6 +15,7 @@ class Team:
                  unofficial: bool = False,
                  girl: bool = False,
                  location: str = None,
+                 group: typing.List[str] = [],
                  extra: typing.Dict[str, typing.Any] = None):
         self.team_id = team_id
         self.name = name
@@ -29,10 +30,16 @@ class Team:
 
         self.location = location
 
-        if extra is None:
-            self.extra = {}
-        else:
-            self.extra = extra
+        self.group = group
+        self.extra = extra if extra is not None else {}
+
+    def enable_group(self, group: str):
+        if group not in self.group:
+            self.group.append(group)
+
+    def disable_group(self, group: str):
+        if group in self.group:
+            self.group.remove(group)
 
     @property
     def get_dict(self):
@@ -56,6 +63,8 @@ class Team:
 
         if self.location is not None:
             obj["location"] = self.location
+
+        obj["group"] = self.group
 
         return obj
 
