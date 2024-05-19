@@ -33,6 +33,14 @@ class Team:
         self.group = group
         self.extra = extra if extra is not None else {}
 
+    def enable_group(self, group: str):
+        if group not in self.group:
+            self.group.append(group)
+
+    def disable_group(self, group: str):
+        if group in self.group:
+            self.group.remove(group)
+
     @property
     def get_dict(self):
         obj = {}
