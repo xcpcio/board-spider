@@ -15,7 +15,7 @@ class Team:
                  unofficial: bool = False,
                  girl: bool = False,
                  location: str = None,
-                 group: typing.List[str] = [],
+                 group: typing.List[str] = None,
                  extra: typing.Dict[str, typing.Any] = None):
         self.team_id = team_id
         self.name = name
@@ -30,7 +30,7 @@ class Team:
 
         self.location = location
 
-        self.group = group
+        self.group = group if group is not None else []
         self.extra = extra if extra is not None else {}
 
     def enable_group(self, group: str):
