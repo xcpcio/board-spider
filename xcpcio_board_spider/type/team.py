@@ -54,17 +54,17 @@ class Team:
         if self.coach is not None:
             obj["coach"] = self.coach
 
-        if self.official is not None:
-            obj[constants.TEAM_TYPE_OFFICIAL] = self.official
-        if self.unofficial is not None:
-            obj[constants.TEAM_TYPE_UNOFFICIAL] = self.unofficial
-        if self.girl is not None:
-            obj[constants.TEAM_TYPE_GIRL] = self.girl
+        if self.official is not None and self.official is True:
+            self.group.append(constants.TEAM_TYPE_OFFICIAL)
+        if self.unofficial is not None and self.unofficial is True:
+            self.group.append(constants.TEAM_TYPE_UNOFFICIAL)
+        if self.girl is not None and self.girl is True:
+            self.group.append(constants.TEAM_TYPE_GIRL)
 
         if self.location is not None:
             obj["location"] = self.location
 
-        obj["group"] = self.group
+        obj["group"] = list(set(self.group))
 
         return obj
 
