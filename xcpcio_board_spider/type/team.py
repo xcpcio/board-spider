@@ -15,6 +15,7 @@ class Team:
                  unofficial: bool = False,
                  girl: bool = False,
                  location: str = None,
+                 group: typing.List[str] = [],
                  extra: typing.Dict[str, typing.Any] = None):
         self.team_id = team_id
         self.name = name
@@ -29,10 +30,8 @@ class Team:
 
         self.location = location
 
-        if extra is None:
-            self.extra = {}
-        else:
-            self.extra = extra
+        self.group = group
+        self.extra = extra if extra is not None else {}
 
     @property
     def get_dict(self):
@@ -56,6 +55,8 @@ class Team:
 
         if self.location is not None:
             obj["location"] = self.location
+
+        obj["group"] = self.group
 
         return obj
 
