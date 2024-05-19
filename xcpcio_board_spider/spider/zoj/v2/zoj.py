@@ -27,10 +27,10 @@ class ZOJ:
         return team.extra[ZOJ.CONSTANT_TEAM_TYPE]
 
     def get_js_object(self, js_code: str, key: str):
-        text = js_code.lstrip("var {} =".format(key)).rstrip(";\n ")
-        text = "JSON.stringify(" + text + ")"
+        text = js_code.lstrip("var {} =".format(key)).replace(
+            "};", "}").replace("];", "]")
+        text = "JSON.stringify({})".format(text)
         text = execjs.eval(text)
-
         return json.loads(text)
 
     def fetch(self):
