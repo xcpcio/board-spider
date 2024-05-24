@@ -2,7 +2,7 @@ import logging
 
 
 def init_logger():
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
