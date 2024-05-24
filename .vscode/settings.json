@@ -6,6 +6,24 @@
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "python.languageServer": "Pylance",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "always"
+        },
+    },
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+    },
+    "markdown.copyFiles.destination": {
+        "**": "images/image.png"
+    },
+    "notebook.output.textLineLimit": 200,
     "cSpell.words": [
         "buildx",
         "ccpc",
@@ -35,7 +53,4 @@
         "xlrd",
         "xmltodict"
     ],
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.autopep8"
-    }
 }

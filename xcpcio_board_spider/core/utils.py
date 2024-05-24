@@ -1,12 +1,13 @@
 import json
-import time
-import os
 import logging
+import os
+import time
+from pathlib import Path
 from typing import Dict
+
 import requests
 
-from xcpcio_board_spider import constants, Contest, Submissions
-
+from xcpcio_board_spider import Contest, Submissions, Teams, constants
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ def json_output(data):
     return json.dumps(data, sort_keys=False, separators=(',', ':'), ensure_ascii=False)
 
 
-def output(target_path, data, if_not_exists=False):
+def output(target_path: Path, data: str, if_not_exists=False):
     if if_not_exists and os.path.exists(target_path):
         return
 
@@ -28,15 +29,16 @@ def output(target_path, data, if_not_exists=False):
         f.write(json_output(data))
 
 
-def ensure_makedirs(_path):
+def ensure_makedirs(_path: Path):
     if not os.path.exists(_path):
         os.makedirs(_path)
 
 
 def url_to_base64(url):
     import base64
-    import requests as req
     from io import BytesIO
+
+    import requests as req
 
     if os.path.isfile(url):
         f = open(url, 'rb')
@@ -121,3 +123,12 @@ def upload_to_xcpcio(token: str, files: Dict[str, str], url: str = "https://boar
             resp.status_code, resp.text, total_size))
 
     return resp
+
+
+def save_to_disk(data_dir: Path, c: Contest, teams: Teams, runs: Submissions, if_not_exists=False):
+    logger.info("save to disk. [data_dir={}]".format(data_dir))
+
+    ensure_makedirs(data_dir)
+    output(data_dir / "config.json", c.get_dict)
+    output(data_dir / "team.json", teams.get_dict, if_not_exists=if_not_exists)
+    output(data_dir / "run.json", runs.get_dict, if_not_exists=if_not_exists)
