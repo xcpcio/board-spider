@@ -132,3 +132,17 @@ def save_to_disk(data_dir: Path, c: Contest, teams: Teams, runs: Submissions, if
     output(data_dir / "config.json", c.get_dict)
     output(data_dir / "team.json", teams.get_dict, if_not_exists=if_not_exists)
     output(data_dir / "run.json", runs.get_dict, if_not_exists=if_not_exists)
+
+
+def fetch_json_resp(uri: str):
+    kTimeoutSecs = 10
+    if os.path.exists(uri):
+        with open(uri, 'r') as f:
+            resp_obj = json.loads(f.read())
+    else:
+        resp = requests.get(uri, timeout=kTimeoutSecs)
+        if resp.status_code != 200:
+            raise RuntimeError(
+                f"fetch failed. [status_code={resp.status_code}]")
+        resp_obj = json.loads(resp.text)
+    return resp_obj
