@@ -212,7 +212,7 @@ class NowCoder:
 
                         runs.append(run)
 
-                    if status == 'correct':
+                    if status == RESULT_CORRECT:
                         run = Submission()
                         run.team_id = team_id
                         run.timestamp = timestamp
