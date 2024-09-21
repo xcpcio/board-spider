@@ -202,6 +202,8 @@ class PTA:
         batch_size = 100
         teams = list(self._teams.values())
         for i in range(0, len(teams), batch_size):
+            if i > 0:
+                await asyncio.sleep(1)
             team_batch = list(islice(teams, i, i + batch_size))
             team_runs_batch = await self._process_team_runs_batch(team_batch)
             for team_run in team_runs_batch:
