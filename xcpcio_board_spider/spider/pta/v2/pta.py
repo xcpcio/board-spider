@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class PTA:
     kTimeOut = 10
+    kRetryTimes = 5
     kAcScore = 300
 
     def __init__(self, contest: Contest, contest_id: str):
@@ -171,7 +172,7 @@ class PTA:
         return runs
 
     async def _fetch_and_parse_team_runs(self, team_id: str) -> Submissions:
-        for i in range(5):
+        for i in range(self.kRetryTimes):
             try:
                 if i > 0:
                     logger.warning(
