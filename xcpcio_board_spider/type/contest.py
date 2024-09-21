@@ -73,11 +73,10 @@ class Contest:
         else:
             self.options = ContestOptions()
 
-    def append_balloon_color(self, Color):
+    def append_balloon_color(self, color: Color):
         if self.balloon_color is None:
             self.balloon_color = []
-
-        self.balloon_color.append(Color)
+        self.balloon_color.append(color)
         return self
 
     def fill_problem_id(self):

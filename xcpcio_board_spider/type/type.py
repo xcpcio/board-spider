@@ -46,6 +46,9 @@ class Color:
         self.color = color
         self.background_color = background_color
 
+    def __eq__(self, other):
+        return self.color == other.color and self.background_color == other.background_color
+
     @property
     def get_dict(self):
         obj = {}
