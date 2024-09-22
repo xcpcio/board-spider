@@ -1,7 +1,24 @@
 from datetime import datetime, timezone
-from xcpcio_board_spider.spider.pta.v2.pta import PTA
-from xcpcio_board_spider.type import Submissions, Contest, Color, Team
+
 from xcpcio_board_spider import constants
+from xcpcio_board_spider.spider.pta.v2.pta import PTA
+from xcpcio_board_spider.type import Color, Contest, Submissions, Team
+
+
+def test_parse_groups():
+    test_data = {
+        "total": 1,
+        "groups": [
+            {"id": "1833442550973878272", "fid": "1", "name": "正式"}
+        ]
+    }
+
+    contest = Contest()
+    pta = PTA(contest, "1222")
+    pta._parse_groups(test_data)
+    group = contest.group
+    assert len(group) == 1
+    assert group["1"] == "正式"
 
 
 def test_parse_contest():
@@ -139,6 +156,7 @@ def test_parse_contest():
 
 def test_parse_team_runs():
     contest = Contest()
+    contest.start_time = 1726376400
     pta = PTA(contest, "1222")
     pta._problem_ids = {
         "1001": 0,
@@ -170,11 +188,11 @@ def test_parse_team_runs():
     assert result[0].team_id == team_id
     assert result[0].status == constants.RESULT_ACCEPTED
     assert result[0].problem_id == 0
-    assert result[0].timestamp == 1726377450
+    assert result[0].timestamp == 1050
     assert result[0].submission_id == "sub001"
 
     assert result[1].team_id == team_id
     assert result[1].status == constants.RESULT_WRONG_ANSWER
     assert result[1].problem_id == 1
-    assert result[1].timestamp == 1726377612
+    assert result[1].timestamp == 1212
     assert result[1].submission_id == "sub002"

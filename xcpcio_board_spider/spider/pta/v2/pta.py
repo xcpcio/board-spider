@@ -1,11 +1,12 @@
-from itertools import islice
-from typing import Optional, Dict, List
-import logging
-
 import asyncio
+import logging
+from itertools import islice
+from typing import Dict, List, Optional
+
 import aiohttp
 
 from xcpcio_board_spider import (
+    Color,
     Contest,
     Submission,
     Submissions,
@@ -13,7 +14,6 @@ from xcpcio_board_spider import (
     Teams,
     constants,
     utils,
-    Color,
 )
 
 logger = logging.getLogger(__name__)
@@ -67,12 +67,12 @@ class PTA:
         return await self._fetch_rank_by_uri(f"xcpc-rankings-team-submissions?team_fid={team_id}")
 
     def _parse_groups(self, data: Dict):
-        group = {}
+        groups = {}
         for group in data["groups"]:
             name = group['name']
             fid = group['fid']
-            group[fid] = name
-        self._contest.group = group
+            groups[fid] = name
+        self._contest.group = groups
 
     def _parse_contest(self, data: Dict):
         competitionBasicInfo = data['competitionBasicInfo']
@@ -166,7 +166,7 @@ class PTA:
             run.team_id = team_id
             run.status = status
             run.problem_id = problem_id
-            run.timestamp = timestamp
+            run.timestamp = timestamp - self._contest.start_time
             run.submission_id = submission_id
             runs.append(run)
         return runs
@@ -182,7 +182,7 @@ class PTA:
             except Exception as e:
                 raise e
 
-    async def _process_team_runs_batch(self, team_batch):
+    async def _process_team_runs_batch(self, team_batch: Teams):
         tasks = [self._fetch_and_parse_team_runs(
             team.team_id) for team in team_batch]
         return await asyncio.gather(*tasks)
