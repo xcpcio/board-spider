@@ -1,8 +1,16 @@
-from xcpcio_board_spider.core import utils, logger
-from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants
-
 import json
+
 import requests
+
+from xcpcio_board_spider.core import logger, utils
+from xcpcio_board_spider.type import (
+    Contest,
+    Submission,
+    Submissions,
+    Team,
+    Teams,
+    constants,
+)
 
 
 class NowCoder:
@@ -212,7 +220,7 @@ class NowCoder:
 
                         runs.append(run)
 
-                    if status == RESULT_CORRECT:
+                    if status == constants.RESULT_CORRECT:
                         run = Submission()
                         run.team_id = team_id
                         run.timestamp = timestamp
