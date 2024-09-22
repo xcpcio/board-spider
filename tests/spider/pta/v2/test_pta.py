@@ -128,7 +128,7 @@ def test_parse_contest():
 
     pta._parse_teams(test_data)
 
-    team = pta._teams["1290"]
+    team = pta.teams["1290"]
     assert team.team_id == "1290"
     assert team.name == "击中月亮"
     assert team.organization == "清华大学"

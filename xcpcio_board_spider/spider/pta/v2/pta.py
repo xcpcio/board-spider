@@ -27,8 +27,8 @@ class PTA:
     def __init__(self, contest: Contest, contest_id: str):
         self._contest = contest
         self._contest_id = contest_id
-        self._teams = Teams()
-        self._runs = Submissions()
+        self.teams = Teams()
+        self.runs = Submissions()
         self._team_ids = set()
         self._problem_ids = {}
 
@@ -127,7 +127,7 @@ class PTA:
             teams[team_id] = team
             team_ids.add(team_id)
 
-        self._teams = teams
+        self.teams = teams
         self._team_ids = team_ids
 
     def _make_fake_runs(self, data: Dict):
@@ -144,7 +144,7 @@ class PTA:
                 submitCountSnapshot = status["submitCountSnapshot"]
                 # TODO(Dup4): make fake runs
 
-        self._runs = runs
+        self.runs = runs
 
     def _parse_status(self, status: str):
         if status == "ACCEPTED":
@@ -190,28 +190,30 @@ class PTA:
     async def _parse(self, fetch_runs: bool):
         groups = await self._fetch_groups()
         self._parse_groups(groups)
+        logger.info(f"Parsed groups finished.")
 
         rank = await self._fetch_rank()
         self._parse_contest(rank)
         self._parse_teams(rank)
+        logger.info(f"Parsed contest and teams finished.")
 
         if not fetch_runs:
             self._make_fake_runs(rank)
             return
 
         all_runs = Submissions()
-        batch_size = 100
-        teams = list(self._teams.values())
+        batch_size = 16
+        teams = list(self.teams.values())
         for i in range(0, len(teams), batch_size):
             if i > 0:
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
             team_batch = list(islice(teams, i, i + batch_size))
             team_runs_batch = await self._process_team_runs_batch(team_batch)
             for team_run in team_runs_batch:
                 all_runs.extend(team_run)
             logger.info(f"Processed {i + len(team_batch)} teams")
         all_runs.sort(key=lambda x: x.timestamp)
-        self._runs = all_runs
+        self.runs = all_runs
 
     def run(self, fetch_runs: bool = False):
-        asyncio.run(self._parse, fetch_runs)
+        asyncio.run(self._parse(fetch_runs))
