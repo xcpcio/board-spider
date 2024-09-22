@@ -1,4 +1,4 @@
-FROM python:3.10-bullseye
+FROM python:3.11
 
 ARG XCPCIO_BOARD_SPIDER_VERSION="0.0.0"
 
