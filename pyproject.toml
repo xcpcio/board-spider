@@ -9,15 +9,11 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 pyyaml = "^6.0"
 pyexecjs = "^1.5.1"
 grequests = "^0.6.0"
@@ -28,6 +24,10 @@ html5lib = "^1.1"
 xlrd = "^2.0.1"
 domjudge-utility = "^0.0.14"
 xmltodict = "^0.13.0"
+asyncio = "^3.4.3"
+aiohttp = "^3.10.5"
+aiodns = "^3.2.0"
+brotli = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.3.1"

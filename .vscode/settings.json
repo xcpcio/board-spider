@@ -25,6 +25,7 @@
     },
     "notebook.output.textLineLimit": 200,
     "cSpell.words": [
+        "aiohttp",
         "buildx",
         "ccpc",
         "DOCKERHUB",
