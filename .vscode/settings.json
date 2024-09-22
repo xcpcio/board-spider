@@ -31,8 +31,6 @@
         "DOCKERHUB",
         "domjudge",
         "execjs",
-        "gevent",
-        "grequests",
         "guilin",
         "gxcpc",
         "hbcpc",
