@@ -179,19 +179,21 @@ def test_parse_team_runs():
             }
         ]
     }
-    team_id = "team001"
-    result = pta._parse_team_runs(test_data, team_id)
+    team = Team()
+    team.team_id = "team001"
+    team.name = "team001"
+    result = pta._parse_team_runs(test_data, team)
 
     assert isinstance(result, Submissions)
     assert len(result) == 2
 
-    assert result[0].team_id == team_id
+    assert result[0].team_id == team.team_id
     assert result[0].status == constants.RESULT_ACCEPTED
     assert result[0].problem_id == 0
     assert result[0].timestamp == 1050
     assert result[0].submission_id == "sub001"
 
-    assert result[1].team_id == team_id
+    assert result[1].team_id == team.team_id
     assert result[1].status == constants.RESULT_WRONG_ANSWER
     assert result[1].problem_id == 1
     assert result[1].timestamp == 1212
