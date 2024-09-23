@@ -136,9 +136,9 @@ class PTA:
 
         runs = Submissions()
         for r in rankings:
-            team_id = str(r['teamInfo']['teamFid'])
+            team_id = str(r['teamFid'])
             for p_id, status in r['problemSubmissionDetailsByProblemSetProblemId'].items():
-                score = status["status"]
+                score = status["score"]
                 validSubmitCount = status["validSubmitCount"]
                 acceptTime = status["acceptTime"]
                 submitCountSnapshot = status["submitCountSnapshot"]
@@ -151,19 +151,32 @@ class PTA:
             return constants.RESULT_ACCEPTED
         if status == "WRONG_ANSWER":
             return constants.RESULT_WRONG_ANSWER
+        if status == "TIME_LIMIT_EXCEEDED":
+            return constants.RESULT_TIME_LIMIT_EXCEEDED
+        if status == "MEMORY_LIMIT_EXCEEDED":
+            return constants.RESULT_MEMORY_LIMIT_EXCEEDED
+        if status == "RUNTIME_ERROR":
+            return constants.RESULT_RUNTIME_ERROR
+        if status == "OUTPUT_LIMIT_EXCEEDED":
+            return constants.RESULT_OUTPUT_LIMIT_EXCEEDED
+        if status == "PRESENTATION_ERROR":
+            return constants.RESULT_WRONG_ANSWER
         return constants.RESULT_UNKNOWN
 
-    def _parse_team_runs(self, data: Dict, team_id: str) -> Submissions:
+    def _parse_team_runs(self, data: Dict, team: Team) -> Submissions:
         runs = Submissions()
         submissions = data["submissions"]
         for submission in submissions:
             run = Submission()
             status = self._parse_status(submission["status"])
+            if status == constants.RESULT_UNKNOWN:
+                logger.error(
+                    f"Unknown status: {submission['status']} {team.name}")
             problem_id = self._problem_ids[submission["problemSetProblemId"]]
             timestamp = utils.get_timestamp_from_iso8601(
                 submission["submitAt"])
             submission_id = submission["submissionId"]
-            run.team_id = team_id
+            run.team_id = team.team_id
             run.status = status
             run.problem_id = problem_id
             run.timestamp = timestamp - self._contest.start_time
@@ -171,20 +184,20 @@ class PTA:
             runs.append(run)
         return runs
 
-    async def _fetch_and_parse_team_runs(self, team_id: str) -> Submissions:
+    async def _fetch_and_parse_team_runs(self, team: Team) -> Submissions:
         for i in range(self.kRetryTimes):
             try:
                 if i > 0:
                     logger.warning(
-                        f"Retry fetch and parse team runs[{i}]: {team_id}")
-                data = await self._fetch_team_submissions(team_id)
-                return self._parse_team_runs(data, team_id)
+                        f"Retry fetch and parse team runs[{i}]: {team.team_id}")
+                data = await self._fetch_team_submissions(team.team_id)
+                return self._parse_team_runs(data, team)
             except Exception as e:
                 raise e
 
     async def _process_team_runs_batch(self, team_batch: Teams):
         tasks = [self._fetch_and_parse_team_runs(
-            team.team_id) for team in team_batch]
+            team) for team in team_batch]
         return await asyncio.gather(*tasks)
 
     async def _parse(self, fetch_runs: bool):
