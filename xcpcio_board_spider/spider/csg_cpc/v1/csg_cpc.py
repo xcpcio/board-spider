@@ -1,9 +1,18 @@
-import typing
-import requests
 import json
 import os
+import typing
 
-from xcpcio_board_spider import Contest, Team, Teams, Submission, Submissions, utils, constants
+import requests
+
+from xcpcio_board_spider import (
+    Contest,
+    Submission,
+    Submissions,
+    Team,
+    Teams,
+    constants,
+    utils,
+)
 
 
 class CSG_CPC():
@@ -211,7 +220,8 @@ class CSG_CPC():
 
         self.contest.start_time = self.get_timestamp_from_date(start_time)
         self.contest.end_time = self.get_timestamp_from_date(end_time)
-
         self.contest.frozen_time = int(frozen_minute) * 60
+        self.contest.problem_quantity = len(self.raw_problem_data)
+        self.contest.fill_problem_id().fill_balloon_color()
 
         return self
