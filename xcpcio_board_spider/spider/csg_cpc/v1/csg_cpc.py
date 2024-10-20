@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import typing
 
 import requests
@@ -91,7 +92,10 @@ class CSG_CPC():
 
             name = raw_team["name"]
             school = raw_team["school"]
-            members = raw_team["tmember"].split("、")
+
+            members = re.split(r'[,、\s]+', raw_team["tmember"])
+            members = [member.strip() for member in members]
+
             coach = str(raw_team["coach"])
             kind = int(raw_team["tkind"])
             room = str(raw_team["room"])
