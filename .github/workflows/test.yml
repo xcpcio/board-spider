@@ -4,8 +4,9 @@ name: Test
 on:
   push:
     branches:
-      - "main"
+      - main
   pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 env:
