@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xcpcio-board-spider"
-version = "0.0.76"
+version = "0.0.77"
 description = "XCPCIO Board Spider"
 authors = ["Dup4 <lyuzhi.pan@gmail.com>"]
 license = "MIT"
@@ -20,7 +20,7 @@ beautifulsoup4 = "^4.12.2"
 lxml = "^4.9.2"
 html5lib = "^1.1"
 xlrd = "^2.0.1"
-domjudge-utility = "^0.0.14"
+domjudge-utility = "^0.0.22"
 xmltodict = "^0.13.0"
 asyncio = "^3.4.3"
 aiohttp = "^3.10.5"
