@@ -78,7 +78,7 @@ class ContestOptions:
     def __init__(self,
                  calculation_of_penalty: Optional[str] = None,
                  submission_timestamp_unit: Optional[str] = None,
-                 submission_has_reaction: Optional[bool] = False,
+                 submission_has_reaction: Optional[bool] = None,
                  ):
         self.calculation_of_penalty = calculation_of_penalty
         self.submission_timestamp_unit = submission_timestamp_unit
