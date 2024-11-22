@@ -1,6 +1,5 @@
 import json
-import typing
-from typing import Optional
+from typing import List, Optional
 
 from .type import Reaction
 
@@ -53,7 +52,7 @@ class Submission:
         return json.dumps(self.get_dict)
 
 
-ISubmissions = typing.List[Submission]
+ISubmissions = List[Submission]
 
 
 class Submissions(ISubmissions):
