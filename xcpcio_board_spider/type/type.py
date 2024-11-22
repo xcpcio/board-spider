@@ -1,5 +1,6 @@
 import json
 import typing
+from typing import Optional
 
 
 class Image:
@@ -75,11 +76,13 @@ class Color:
 
 class ContestOptions:
     def __init__(self,
-                 calculation_of_penalty: str = None,
-                 submission_timestamp_unit: str = None,
+                 calculation_of_penalty: Optional[str] = None,
+                 submission_timestamp_unit: Optional[str] = None,
+                 submission_has_reaction: Optional[bool] = False,
                  ):
         self.calculation_of_penalty = calculation_of_penalty
         self.submission_timestamp_unit = submission_timestamp_unit
+        self.submission_has_reaction = submission_has_reaction
 
     @property
     def get_dict(self):
@@ -91,6 +94,9 @@ class ContestOptions:
         if self.submission_timestamp_unit is not None:
             obj["submission_timestamp_unit"] = self.submission_timestamp_unit
 
+        if self.submission_has_reaction is not None:
+            obj["submission_has_reaction"] = self.submission_has_reaction
+
         return obj
 
     def from_dict(self, d: typing.Any):
@@ -99,6 +105,9 @@ class ContestOptions:
 
         if "submission_timestamp_unit" in d.keys():
             self.submission_timestamp_unit = d["submission_timestamp_unit"]
+
+        if "submission_has_reaction" in d.keys():
+            self.submission_has_reaction = d["submission_has_reaction"]
 
     @property
     def get_json(self):
