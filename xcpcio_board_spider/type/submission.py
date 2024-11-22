@@ -1,5 +1,8 @@
-import typing
 import json
+import typing
+from typing import Optional
+
+from .type import Reaction
 
 
 class Submission:
@@ -8,9 +11,10 @@ class Submission:
                  team_id: str = "",
                  problem_id: int = 0,
                  timestamp: int = 0,
-                 time: int = None,
-                 language: str = None,
-                 submission_id: str = None):
+                 time: Optional[int] = None,
+                 language: Optional[str] = None,
+                 submission_id: Optional[str] = None,
+                 reaction: Optional[Reaction] = None):
         self.status = status
         self.team_id = team_id
         self.problem_id = problem_id
@@ -19,6 +23,7 @@ class Submission:
         self.time = time
         self.language = language
         self.submission_id = submission_id
+        self.reaction = reaction
 
     @property
     def get_dict(self):
@@ -37,6 +42,9 @@ class Submission:
 
         if self.submission_id is not None:
             obj["submission_id"] = self.submission_id
+
+        if self.reaction is not None:
+            obj["reaction"] = self.reaction.get_dict
 
         return obj
 

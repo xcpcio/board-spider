@@ -106,3 +106,28 @@ class ContestOptions:
 
     def from_json(self, json_string: str):
         self.from_dict(json.loads(json_string))
+
+
+class Reaction:
+    def __init__(self, url: typing.Optional[str] = None):
+        self.url = url
+
+    @property
+    def get_dict(self):
+        obj = {}
+
+        if self.url is not None:
+            obj["url"] = self.url
+
+        return obj
+
+    def from_dict(self, d: typing.Dict):
+        if "url" in d.keys():
+            self.url = d["url"]
+
+    @property
+    def get_json(self):
+        return json.dumps(self.get_dict)
+
+    def from_json(self, json_string: str):
+        self.from_dict(json.loads(json_string))
