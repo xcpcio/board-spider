@@ -1,8 +1,8 @@
-import typing
 import json
+import typing
 
-from .type import *
 from .constants import *
+from .type import *
 
 
 class Contest:
@@ -42,7 +42,7 @@ class Contest:
         if self.group is None:
             self.group = {
                 TEAM_TYPE_OFFICIAL: TEAM_TYPE_ZH_CN_OFFICIAL,
-                TEAM_TYPE_UNOFFICIAL: TEAM_TYPE_ZH_CH_UNOFFICIAL,
+                TEAM_TYPE_UNOFFICIAL: TEAM_TYPE_ZH_CN_UNOFFICIAL,
             }
 
         if self.status_time_display is None:
