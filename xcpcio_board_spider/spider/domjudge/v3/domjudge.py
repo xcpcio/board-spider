@@ -1,10 +1,18 @@
+import datetime as dt
 import math
-
-from xcpcio_board_spider.type import Contest, Team, Teams, Submission, Submissions, constants, Color
-from xcpcio_board_spider import utils
 
 from domjudge_utility import Dump, DumpConfig
 
+from xcpcio_board_spider import utils
+from xcpcio_board_spider.type import (
+    Color,
+    Contest,
+    Submission,
+    Submissions,
+    Team,
+    Teams,
+    constants,
+)
 
 '''
 For DOMjudge v4 API
@@ -35,10 +43,8 @@ class DOMjudge:
 
         return self
 
-    def get_submission_timestamp_millisecond(self, time_str: str):
-        from datetime import datetime
-
-        time_obj = datetime.strptime(time_str, '%H:%M:%S.%f')
+    def get_time_duration_millisecond(self, time_str: str):
+        time_obj = dt.datetime.strptime(time_str, '%H:%M:%S.%f')
 
         hour = time_obj.hour
         minute = time_obj.minute
@@ -92,7 +98,9 @@ class DOMjudge:
             if d_team["display_name"] is not None:
                 name = d_team["display_name"]
 
-            organization = d_team["affiliation"]
+            organization = ""
+            if "affiliation" in d_team.keys():
+                organization = d_team["affiliation"]
 
             team.team_id = team_id
             team.name = name
@@ -123,8 +131,7 @@ class DOMjudge:
             if contest_time.startswith("-"):
                 continue
 
-            timestamp_ms = self.get_submission_timestamp_millisecond(
-                contest_time)
+            timestamp_ms = self.get_time_duration_millisecond(contest_time)
 
             if timestamp_ms > (self.contest.end_time - self.contest.start_time) * 1000:
                 continue
@@ -139,7 +146,8 @@ class DOMjudge:
             submission.time = time
 
             p = self.dump.problems_dict[problem_id]
-            submission.problem_id = p["ordinal"]
+            min_ordinal = min(int(p["ordinal"]) for p in self.dump.problems_dict.values())
+            submission.problem_id = int(p["ordinal"]) - min_ordinal
 
             self.runs.append(submission)
 
@@ -155,13 +163,24 @@ class DOMjudge:
                 Color(background_color=p["rgb"], color="#000"))
 
         start_time = self.dump.contest["start_time"]
-        end_time = self.dump.contest["end_time"]
-        self.contest.start_time = utils.get_timestamp_from_iso8601(start_time)
-        self.contest.end_time = utils.get_timestamp_from_iso8601(end_time)
+        start_time = utils.get_timestamp_from_iso8601(start_time)
+        self.contest.start_time = start_time
+
+        if "end_time" in self.dump.contest.keys():
+            end_time = self.dump.contest["end_time"]
+            end_time = utils.get_timestamp_from_iso8601(end_time)
+            self.contest.end_time = end_time
+        elif "duration" in self.dump.contest.keys():
+            duration = self.dump.contest["duration"]
+            duration_seconds = self.get_time_duration_millisecond(duration) // 1000
+            end_time = start_time + duration_seconds
+            self.contest.end_time = end_time
+        else:
+            raise KeyError("end_time or duration is not found in contest")
 
         if "scoreboard_freeze_duration" in self.dump.contest.keys() and self.dump.contest["scoreboard_freeze_duration"] is not None:
             scoreboard_freeze_duration = self.dump.contest["scoreboard_freeze_duration"]
-            self.contest.frozen_time = self.get_submission_timestamp_millisecond(
+            self.contest.frozen_time = self.get_time_duration_millisecond(
                 scoreboard_freeze_duration) // 1000
 
         if len(self.dump.awards) == 0:
