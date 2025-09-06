@@ -14,13 +14,13 @@ class Image:
         obj = {}
 
         if self.url is not None:
-            obj['url'] = self.url
+            obj["url"] = self.url
 
         if self.base64 is not None:
-            obj['base64'] = self.base64
+            obj["base64"] = self.base64
 
         if self.preset is not None:
-            obj['preset'] = self.preset
+            obj["preset"] = self.preset
 
         return obj
 
@@ -48,7 +48,10 @@ class Color:
         self.background_color = background_color
 
     def __eq__(self, other):
-        return self.color == other.color and self.background_color == other.background_color
+        return (
+            self.color == other.color
+            and self.background_color == other.background_color
+        )
 
     @property
     def get_dict(self):
@@ -75,14 +78,17 @@ class Color:
 
 
 class ContestOptions:
-    def __init__(self,
-                 calculation_of_penalty: Optional[str] = None,
-                 submission_timestamp_unit: Optional[str] = None,
-                 submission_has_reaction: Optional[bool] = None,
-                 ):
+    def __init__(
+        self,
+        calculation_of_penalty: Optional[str] = None,
+        submission_timestamp_unit: Optional[str] = None,
+        has_reaction_videos: Optional[bool] = None,
+        reaction_video_url_template: Optional[str] = None,
+    ):
         self.calculation_of_penalty = calculation_of_penalty
         self.submission_timestamp_unit = submission_timestamp_unit
-        self.submission_has_reaction = submission_has_reaction
+        self.has_reaction_videos = has_reaction_videos
+        self.reaction_video_url_template = reaction_video_url_template
 
     @property
     def get_dict(self):
@@ -94,8 +100,11 @@ class ContestOptions:
         if self.submission_timestamp_unit is not None:
             obj["submission_timestamp_unit"] = self.submission_timestamp_unit
 
-        if self.submission_has_reaction is not None:
-            obj["submission_has_reaction"] = self.submission_has_reaction
+        if self.has_reaction_videos is not None:
+            obj["has_reaction_videos"] = self.has_reaction_videos
+
+        if self.reaction_video_url_template is not None:
+            obj["reaction_video_url_template"] = self.reaction_video_url_template
 
         return obj
 
@@ -106,8 +115,11 @@ class ContestOptions:
         if "submission_timestamp_unit" in d.keys():
             self.submission_timestamp_unit = d["submission_timestamp_unit"]
 
-        if "submission_has_reaction" in d.keys():
-            self.submission_has_reaction = d["submission_has_reaction"]
+        if "has_reaction_videos" in d.keys():
+            self.has_reaction_videos = d["has_reaction_videos"]
+
+        if "reaction_video_url_template" in d.keys():
+            self.reaction_video_url_template = d["reaction_video_url_template"]
 
     @property
     def get_json(self):
