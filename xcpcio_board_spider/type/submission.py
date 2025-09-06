@@ -5,15 +5,17 @@ from .type import Reaction
 
 
 class Submission:
-    def __init__(self,
-                 status: str = "",
-                 team_id: str = "",
-                 problem_id: int = 0,
-                 timestamp: int = 0,
-                 time: Optional[int] = None,
-                 language: Optional[str] = None,
-                 submission_id: Optional[str] = None,
-                 reaction: Optional[Reaction] = None):
+    def __init__(
+        self,
+        status: str = "",
+        team_id: str = "",
+        problem_id: int = 0,
+        timestamp: int = 0,
+        time: Optional[int] = None,
+        language: Optional[str] = None,
+        submission_id: Optional[str] = None,
+        reaction: Optional[Reaction] = None,
+    ):
         self.status = status
         self.team_id = team_id
         self.problem_id = problem_id

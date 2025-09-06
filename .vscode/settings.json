@@ -7,7 +7,7 @@
     "files.trimFinalNewlines": true,
     "python.languageServer": "Pylance",
     "[python]": {
-        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
             "source.organizeImports": "always"

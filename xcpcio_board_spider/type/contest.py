@@ -1,30 +1,37 @@
 import json
 import typing
 
-from .constants import *
-from .type import *
+from .constants import (
+    FULL_STATUS_TIME_DISPLAY,
+    TEAM_TYPE_OFFICIAL,
+    TEAM_TYPE_UNOFFICIAL,
+    TEAM_TYPE_ZH_CN_OFFICIAL,
+    TEAM_TYPE_ZH_CN_UNOFFICIAL,
+)
+from .type import Color, ContestOptions, Image
 
 
 class Contest:
-    def __init__(self,
-                 contest_name: str = "",
-                 start_time: int = 0,
-                 end_time: int = 0,
-                 frozen_time: int = 60 * 60,
-                 unfrozen_time: int = 0x3f3f3f3f3f3f3f3f,
-                 penalty: int = 20 * 60,
-                 problem_quantity: int = 0,
-                 problem_id: typing.List[str] = [],
-                 group: typing.Any = None,
-                 organization: str = "School",
-                 status_time_display: typing.Any = None,
-                 medal: typing.Any = {},
-                 balloon_color: typing.List[Color] = None,
-                 logo: Image = None,
-                 banner: Image = None,
-                 banner_mode: str = None,
-                 options: ContestOptions = None,
-                 ):
+    def __init__(
+        self,
+        contest_name: str = "",
+        start_time: int = 0,
+        end_time: int = 0,
+        frozen_time: int = 60 * 60,
+        unfrozen_time: int = 0x3F3F3F3F3F3F3F3F,
+        penalty: int = 20 * 60,
+        problem_quantity: int = 0,
+        problem_id: typing.List[str] = [],
+        group: typing.Any = None,
+        organization: str = "School",
+        status_time_display: typing.Any = None,
+        medal: typing.Any = {},
+        balloon_color: typing.List[Color] = None,
+        logo: Image = None,
+        banner: Image = None,
+        banner_mode: str = None,
+        options: ContestOptions = None,
+    ):
         self.contest_name = contest_name
         self.start_time = start_time
         self.end_time = end_time
@@ -80,30 +87,29 @@ class Contest:
         return self
 
     def fill_problem_id(self):
-        self.problem_id = [chr(ord('A') + i)
-                           for i in range(self.problem_quantity)]
+        self.problem_id = [chr(ord("A") + i) for i in range(self.problem_quantity)]
 
         return self
 
     def fill_balloon_color(self):
         default_balloon_color_list = [
-            Color(background_color='rgba(189, 14, 14, 0.7)', color='#fff'),
-            Color(background_color='rgba(149, 31, 217, 0.7)', color='#fff'),
-            Color(background_color='rgba(16, 32, 96, 0.7)', color='#fff'),
-            Color(background_color='rgba(38, 185, 60, 0.7)', color='#000'),
-            Color(background_color='rgba(239, 217, 9, 0.7)', color='#000'),
-            Color(background_color='rgba(243, 88, 20, 0.7)', color='#fff'),
-            Color(background_color='rgba(12, 76, 138, 0.7)', color='#fff'),
-            Color(background_color='rgba(156, 155, 155, 0.7)', color='#000'),
-            Color(background_color='rgba(4, 154, 115, 0.7)', color='#000'),
-            Color(background_color='rgba(159, 19, 236, 0.7)', color='#fff'),
-            Color(background_color='rgba(42, 197, 202, 0.7)', color='#000'),
-            Color(background_color='rgba(142, 56, 54, 0.7)', color='#fff'),
-            Color(background_color='rgba(144, 238, 144, 0.7)', color='#000'),
-            Color(background_color='rgba(77, 57, 0, 0.7)', color='#fff'),
+            Color(background_color="rgba(189, 14, 14, 0.7)", color="#fff"),
+            Color(background_color="rgba(149, 31, 217, 0.7)", color="#fff"),
+            Color(background_color="rgba(16, 32, 96, 0.7)", color="#fff"),
+            Color(background_color="rgba(38, 185, 60, 0.7)", color="#000"),
+            Color(background_color="rgba(239, 217, 9, 0.7)", color="#000"),
+            Color(background_color="rgba(243, 88, 20, 0.7)", color="#fff"),
+            Color(background_color="rgba(12, 76, 138, 0.7)", color="#fff"),
+            Color(background_color="rgba(156, 155, 155, 0.7)", color="#000"),
+            Color(background_color="rgba(4, 154, 115, 0.7)", color="#000"),
+            Color(background_color="rgba(159, 19, 236, 0.7)", color="#fff"),
+            Color(background_color="rgba(42, 197, 202, 0.7)", color="#000"),
+            Color(background_color="rgba(142, 56, 54, 0.7)", color="#fff"),
+            Color(background_color="rgba(144, 238, 144, 0.7)", color="#000"),
+            Color(background_color="rgba(77, 57, 0, 0.7)", color="#fff"),
         ]
 
-        self.balloon_color = default_balloon_color_list[:self.problem_quantity]
+        self.balloon_color = default_balloon_color_list[: self.problem_quantity]
 
         return self
 

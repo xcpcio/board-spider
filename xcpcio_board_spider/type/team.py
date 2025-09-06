@@ -1,22 +1,24 @@
-import typing
 import json
+import typing
 
 from . import constants
 
 
 class Team:
-    def __init__(self,
-                 team_id: str = "",
-                 name: str = "",
-                 organization: str = "",
-                 members: typing.List[str] = None,
-                 coach: str = None,
-                 official: bool = False,
-                 unofficial: bool = False,
-                 girl: bool = False,
-                 location: str = None,
-                 group: typing.List[str] = None,
-                 extra: typing.Dict[str, typing.Any] = None):
+    def __init__(
+        self,
+        team_id: str = "",
+        name: str = "",
+        organization: str = "",
+        members: typing.List[str] = None,
+        coach: str = None,
+        official: bool = False,
+        unofficial: bool = False,
+        girl: bool = False,
+        location: str = None,
+        group: typing.List[str] = None,
+        extra: typing.Dict[str, typing.Any] = None,
+    ):
         self.team_id = team_id
         self.name = name
         self.organization = organization
